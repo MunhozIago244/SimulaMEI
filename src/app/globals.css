@@ -1,0 +1,17 @@
+@import "tailwindcss";
+
+/* ── Modular CSS architecture ──────────────────────────────── */
+/* Design tokens (colors, typography, elevation, motion)       */
+@import "./styles/tokens.css";
+/* Reset, base styles, animations, utilities                   */
+@import "./styles/base.css";
+/* Form controls (slider, toggle, tooltip, inputs)             */
+@import "./styles/controls.css";
+/* Layout shells, sections, instrument panels, floating nav    */
+@import "./styles/layout.css";
+/* Auth surfaces (login, register, OAuth buttons)              */
+@import "./styles/auth.css";
+/* Operational surfaces (dashboard, accountant, results)       */
+@import "./styles/surfaces.css";
+/* Responsive breakpoints                                      */
+@import "./styles/responsive.css";
