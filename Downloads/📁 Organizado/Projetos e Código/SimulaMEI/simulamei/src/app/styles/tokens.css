@@ -1,0 +1,71 @@
+/* ── Design tokens ─────────────────────────────────────────── */
+:root {
+  /* Backgrounds */
+  --bg0: oklch(8% 0.012 255);
+  --bg1: oklch(12% 0.018 255);
+  --bg2: oklch(17% 0.022 255);
+  --bg3: oklch(22% 0.024 255);
+  --border: oklch(25% 0.022 255);
+  --border2: oklch(33% 0.026 255);
+
+  /* Text */
+  --text1: oklch(94% 0.012 115);
+  --text2: oklch(70% 0.018 255);
+  --text3: oklch(63% 0.018 255);
+  --ink-on-accent: oklch(10% 0.018 130);
+  --ink-on-warm: oklch(10% 0.018 60);
+  --text-on-strong: oklch(96% 0.01 255);
+
+  /* Accent colors */
+  --lime: oklch(88% 0.19 126);
+  --lime-dim: oklch(62% 0.12 126);
+  --blue: oklch(68% 0.15 252);
+  --blue-dim: oklch(36% 0.09 252);
+  --yellow: oklch(82% 0.15 85);
+  --yellow-dim: oklch(47% 0.09 85);
+  --red: oklch(66% 0.21 28);
+  --red-dim: oklch(42% 0.13 28);
+  --orange: oklch(73% 0.18 52);
+
+  /* Shape */
+  --radius: 7px;
+  --radius-lg: 8px;
+
+  /* Typography */
+  --mono: var(--font-mono-var, 'JetBrains Mono'), monospace;
+  --sans: var(--font-space, 'Space Grotesk'), sans-serif;
+
+  /* Elevation */
+  --lime-glow: 0 18px 54px oklch(88% 0.19 126 / 0.12);
+  --blue-glow: 0 18px 54px oklch(68% 0.15 252 / 0.12);
+  --panel-shadow: 0 26px 80px oklch(2% 0.01 255 / 0.34);
+
+  /* Motion */
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
+  --press-scale: 0.975;
+}
+
+[data-theme="light"] {
+  --bg0: oklch(96% 0.01 115);
+  --bg1: oklch(99% 0.006 115);
+  --bg2: oklch(93% 0.012 115);
+  --bg3: oklch(88% 0.014 115);
+  --border: oklch(83% 0.015 115);
+  --border2: oklch(76% 0.018 115);
+  --text1: oklch(17% 0.018 130);
+  --text2: oklch(38% 0.018 130);
+  --text3: oklch(51% 0.018 130);
+  --ink-on-accent: oklch(98% 0.006 115);
+  --ink-on-warm: oklch(98% 0.006 115);
+  --text-on-strong: oklch(98% 0.006 115);
+  --lime: oklch(48% 0.14 126);
+  --lime-dim: oklch(82% 0.09 126);
+  --blue: oklch(46% 0.15 252);
+  --blue-dim: oklch(84% 0.07 252);
+  --yellow: oklch(52% 0.13 85);
+  --yellow-dim: oklch(88% 0.09 85);
+  --red: oklch(52% 0.19 28);
+  --red-dim: oklch(88% 0.07 28);
+  --orange: oklch(47% 0.16 52);
+}

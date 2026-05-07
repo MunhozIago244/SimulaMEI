@@ -1,0 +1,108 @@
+/* ── Range slider ───────────────────────────────────────────── */
+input[type=range] {
+  -webkit-appearance: none;
+  width: 100%;
+  height: 4px;
+  border-radius: 2px;
+  background: linear-gradient(
+    to right,
+    var(--slider-fill, var(--lime)) var(--slider-pct, 0%),
+    var(--border2) var(--slider-pct, 0%)
+  );
+  outline: none;
+  cursor: pointer;
+}
+input[type=range]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 20px; height: 20px;
+  border-radius: 50%;
+  background: var(--lime);
+  cursor: pointer;
+  border: 3px solid var(--bg0);
+  box-shadow: 0 0 0 2px var(--lime);
+  transition: transform .15s;
+}
+input[type=range]::-webkit-slider-thumb:hover { transform: scale(1.2); }
+input[type=range]::-webkit-slider-runnable-track {
+  height: 4px;
+  border-radius: 2px;
+}
+input[type=range]:focus-visible { outline: none; }
+input[type=range]:focus-visible::-webkit-slider-thumb {
+  box-shadow: 0 0 0 3px var(--bg0), 0 0 0 5px var(--lime);
+}
+
+/* ── Numeric input (slider companion) ──────────────────────── */
+.slider-number-input {
+  width: 88px;
+  height: 36px;
+  background: var(--bg2);
+  border: 1px solid var(--border2);
+  border-radius: var(--radius);
+  color: var(--text1);
+  font-family: var(--mono);
+  font-size: 13px;
+  font-weight: 700;
+  text-align: center;
+  flex-shrink: 0;
+  transition: border-color .15s;
+}
+.slider-number-input:hover { border-color: var(--text3); }
+.slider-number-input:focus { border-color: var(--lime); outline: none; }
+
+/* ── Toggle ─────────────────────────────────────────────────── */
+.toggle-wrap { display: flex; align-items: center; gap: 10px; cursor: pointer; user-select: none; }
+.toggle {
+  position: relative; width: 42px; height: 24px;
+  background: var(--bg3); border-radius: 12px;
+  transition: background .2s;
+  flex-shrink: 0;
+}
+.toggle.on { background: var(--lime); }
+.toggle::after {
+  content: '';
+  position: absolute;
+  top: 3px; left: 3px;
+  width: 18px; height: 18px;
+  background: var(--bg0);
+  border-radius: 50%;
+  transition: transform .2s;
+}
+.toggle.on::after { transform: translateX(18px); }
+
+/* ── Tooltip ────────────────────────────────────────────────── */
+.tt-wrap { position: relative; display: inline-flex; align-items: center; }
+.tt-icon {
+  width: 15px; height: 15px;
+  border-radius: 50%;
+  background: var(--border2);
+  color: var(--text2);
+  font-size: 10px;
+  display: inline-flex; align-items: center; justify-content: center;
+  cursor: help; flex-shrink: 0;
+  font-family: var(--sans);
+  font-weight: 600;
+  transition: background .15s;
+}
+.tt-icon:hover,
+.tt-icon:focus-visible { background: var(--blue); color: var(--text-on-strong); outline: none; }
+.tt-box {
+  position: absolute;
+  bottom: calc(100% + 8px);
+  left: 50%; transform: translateX(-50%);
+  background: var(--bg2);
+  border: 1px solid var(--border2);
+  color: var(--text1);
+  font-size: 12px;
+  line-height: 1.5;
+  padding: 8px 12px;
+  border-radius: var(--radius);
+  width: 220px;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity .15s;
+  z-index: 100;
+  font-family: var(--sans);
+}
+.tt-wrap:hover .tt-box,
+.tt-wrap:focus-within .tt-box { opacity: 1; }

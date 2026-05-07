@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="620" viewBox="0 0 960 620" role="img" aria-labelledby="title desc">
+  <title id="title">Preview do painel contador SimulaMEI</title>
+  <desc id="desc">Painel de carteira com clientes MEI, alertas de teto, relatórios e status de risco.</desc>
+  <rect width="960" height="620" rx="30" fill="#0f1117"/>
+  <rect x="34" y="34" width="892" height="552" rx="24" fill="#171a22" stroke="#2b303a"/>
+  <text x="72" y="92" fill="#f4f6f8" font-family="Inter, Arial, sans-serif" font-size="38" font-weight="700">Painel contador</text>
+  <text x="72" y="128" fill="#8f98a8" font-family="Inter, Arial, sans-serif" font-size="18">Carteira MEI monitorada por risco fiscal</text>
+  <g font-family="Inter, Arial, sans-serif">
+    <rect x="72" y="170" width="250" height="112" rx="18" fill="#10131a" stroke="#2b303a"/>
+    <text x="98" y="210" fill="#8f98a8" font-size="18">Clientes ativos</text>
+    <text x="98" y="254" fill="#f4f6f8" font-size="40" font-weight="700">147</text>
+    <rect x="354" y="170" width="250" height="112" rx="18" fill="#1d2617" stroke="#40531a"/>
+    <text x="380" y="210" fill="#8f98a8" font-size="18">Economia mapeada</text>
+    <text x="380" y="254" fill="#c8f135" font-size="40" font-weight="700">R$ 84k</text>
+    <rect x="636" y="170" width="218" height="112" rx="18" fill="#271d0f" stroke="#604313"/>
+    <text x="662" y="210" fill="#8f98a8" font-size="18">Alertas abertos</text>
+    <text x="662" y="254" fill="#f5c84b" font-size="40" font-weight="700">12</text>
+    <rect x="72" y="324" width="782" height="190" rx="18" fill="#10131a" stroke="#2b303a"/>
+    <text x="102" y="366" fill="#8f98a8" font-size="16">Cliente</text>
+    <text x="430" y="366" fill="#8f98a8" font-size="16">Risco</text>
+    <text x="620" y="366" fill="#8f98a8" font-size="16">Ação</text>
+    <line x1="96" y1="386" x2="830" y2="386" stroke="#2b303a"/>
+    <text x="102" y="426" fill="#f4f6f8" font-size="18">Studio Dev MEI</text>
+    <text x="430" y="426" fill="#f5c84b" font-size="18" font-weight="700">83% do teto</text>
+    <text x="620" y="426" fill="#c8f135" font-size="18">Gerar relatório</text>
+    <text x="102" y="474" fill="#f4f6f8" font-size="18">Consultoria Alfa</text>
+    <text x="430" y="474" fill="#ff8c00" font-size="18" font-weight="700">Fator R baixo</text>
+    <text x="620" y="474" fill="#c8f135" font-size="18">Simular anexo</text>
+  </g>
+</svg>

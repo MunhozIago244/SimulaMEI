@@ -1,0 +1,138 @@
+import { createHmac } from 'node:crypto'
+import { NextRequest, NextResponse } from 'next/server'
+import { createAdminClient } from '@/lib/supabase/admin'
+import { getCnae, normalizeCnaeCode, simular } from '@/lib/tributario'
+import type { EntradaSimulacao } from '@/types/tributario'
+
+interface ApiKeyRow {
+  id: string
+  user_id: string
+  tier: 'free' | 'pro'
+  requests_month: number | null
+  revoked_at: string | null
+}
+
+const TIER_MONTHLY_LIMIT: Record<ApiKeyRow['tier'], number> = {
+  free: 1000,
+  pro: 500000,
+}
+
+function getBearerToken(request: NextRequest) {
+  const header = request.headers.get('authorization') ?? ''
+  const [scheme, token] = header.split(/\s+/, 2)
+
+  if (scheme?.toLowerCase() !== 'bearer' || !token) return null
+  return token.trim()
+}
+
+function hashApiKey(key: string) {
+  const secret = process.env.SIMULAMEI_API_KEY_SECRET ?? process.env.SUPABASE_SERVICE_ROLE_KEY
+  if (!secret) return null
+
+  return createHmac('sha256', secret).update(key).digest('hex')
+}
+
+function parseNumberParam(request: NextRequest, name: string) {
+  const raw = request.nextUrl.searchParams.get(name)
+  if (raw == null) return null
+
+  const value = Number(raw)
+  return Number.isFinite(value) ? value : null
+}
+
+function parseTipoMei(value: string | null): EntradaSimulacao['tipoMei'] | null {
+  if (value === 'geral' || value === 'caminhoneiro') return value
+  return null
+}
+
+export async function GET(request: NextRequest) {
+  const token = getBearerToken(request)
+  if (!token) {
+    return NextResponse.json({ error: 'Authorization Bearer obrigatório.' }, { status: 401 })
+  }
+
+  const keyHash = hashApiKey(token)
+  if (!keyHash) {
+    return NextResponse.json({ error: 'API keys não configuradas neste ambiente.' }, { status: 503 })
+  }
+
+  const admin = createAdminClient()
+  const { data: apiKey, error: apiKeyError } = await admin
+    .from('api_keys')
+    .select('id,user_id,tier,requests_month,revoked_at')
+    .eq('key_hash', keyHash)
+    .maybeSingle()
+
+  if (apiKeyError) {
+    console.error('[/api/contadores/simulate] api key query error:', apiKeyError.message)
+    return NextResponse.json({ error: 'Não foi possível validar a chave.' }, { status: 500 })
+  }
+
+  const key = apiKey as ApiKeyRow | null
+  if (!key || key.revoked_at) {
+    return NextResponse.json({ error: 'Chave inválida ou revogada.' }, { status: 401 })
+  }
+
+  const monthlyLimit = TIER_MONTHLY_LIMIT[key.tier] ?? TIER_MONTHLY_LIMIT.free
+  const currentUsage = key.requests_month ?? 0
+  if (currentUsage >= monthlyLimit) {
+    return NextResponse.json(
+      { error: 'Limite mensal da API atingido.', limit: monthlyLimit, used: currentUsage },
+      { status: 429 },
+    )
+  }
+
+  const faturamentoAcumulado = parseNumberParam(request, 'faturamentoAcumulado')
+  const mesAtual = parseNumberParam(request, 'mesAtual')
+  const folhaMensal = parseNumberParam(request, 'folhaMensal')
+  const cnae = request.nextUrl.searchParams.get('cnae')
+  const tipoMei = parseTipoMei(request.nextUrl.searchParams.get('tipoMei') ?? 'geral')
+
+  if (
+    faturamentoAcumulado == null ||
+    mesAtual == null ||
+    folhaMensal == null ||
+    !Number.isInteger(mesAtual) ||
+    mesAtual < 1 ||
+    mesAtual > 12 ||
+    !cnae ||
+    !tipoMei
+  ) {
+    return NextResponse.json(
+      { error: 'Parâmetros obrigatórios: faturamentoAcumulado, mesAtual, cnae, folhaMensal, tipoMei.' },
+      { status: 400 },
+    )
+  }
+
+  const normalizedCnae = normalizeCnaeCode(cnae)
+  if (!getCnae(normalizedCnae)) {
+    return NextResponse.json({ error: 'CNAE não reconhecido.' }, { status: 400 })
+  }
+
+  const entrada: EntradaSimulacao = {
+    faturamentoAcumulado,
+    mesAtual,
+    cnae: normalizedCnae,
+    folhaMensal,
+    tipoMei,
+  }
+  const resultado = simular(entrada)
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  await (admin as any)
+    .from('api_keys')
+    .update({
+      requests_month: currentUsage + 1,
+      last_used_at: new Date().toISOString(),
+    })
+    .eq('id', key.id)
+
+  return NextResponse.json({
+    ok: true,
+    usage: {
+      used: currentUsage + 1,
+      limit: monthlyLimit,
+    },
+    resultado,
+  })
+}

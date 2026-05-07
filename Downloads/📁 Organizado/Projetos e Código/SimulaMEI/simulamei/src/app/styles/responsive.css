@@ -1,0 +1,52 @@
+/* ── Responsive breakpoints ─────────────────────────────────── */
+@media(max-width:900px) {
+  .hero-grid, .sim-grid, .full-grid, .gate-grid, .cnt-grid { grid-template-columns: 1fr !important; }
+}
+
+@media(max-width:768px) {
+  .section-shell { padding: 0 20px; }
+  .im-section-header { grid-template-columns: 1fr; gap: 10px; }
+  .floating-section-nav { bottom: 10px; overflow-x: auto; justify-content: flex-start; scrollbar-width: none; }
+  .floating-section-nav::-webkit-scrollbar { display: none; }
+  .floating-section-nav a { white-space: nowrap; }
+
+  #como-calcula .instrument-panel, #contadores .instrument-panel { grid-template-columns: 1fr !important; }
+  #como-calcula .instrument-panel > div:first-child { border-right: 0 !important; border-bottom: 1px solid var(--border) !important; min-height: auto !important; }
+  .accountant-plan-preview-grid { grid-template-columns: 1fr !important; }
+
+  .desktop-only { display: none !important; }
+  .res-grid, .how-grid { grid-template-columns: 1fr !important; }
+  .dashboard-header, .accountant-shell-header, .accountant-section-header, .full-results-header, .dashboard-hero-grid, .dashboard-main-grid, .dashboard-module-grid { grid-template-columns: 1fr !important; }
+  .accountant-shell-header, .accountant-section-header, .full-results-header { flex-direction: column !important; align-items: flex-start !important; }
+  .full-results-actions { margin-left: 0 !important; width: 100% !important; flex-wrap: wrap !important; }
+  .full-results-actions > a { flex: 1 1 180px !important; }
+  .dashboard-kpi-grid { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }
+  .onboarding-shell { grid-template-columns: 1fr !important; }
+  .dashboard-header-actions { justify-items: start !important; }
+  .dashboard-radar-header { flex-direction: column !important; align-items: flex-start !important; }
+  .dashboard-radar-score { text-align: left !important; min-width: 0 !important; }
+  .dashboard-radar-metrics, .excess-grid, .accountant-detail-grid, .accountant-simulation-grid, .onboarding-duo-grid, .accountant-hero-grid, .accountant-value-grid, .accountant-form-grid, .cnae-accountant-cta { grid-template-columns: 1fr !important; }
+  .onboarding-sidebar { position: static !important; top: auto !important; }
+  .res-grid > * { padding: 14px !important; }
+  .hero-section-inner { padding: 0 20px !important; }
+  .shared-result-banner { padding: 0 20px !important; }
+  .auth-page { justify-content: flex-start; padding: 26px 18px; }
+  .auth-logo { margin-bottom: 28px; }
+  .auth-card { padding: 28px 22px; }
+}
+
+@media(min-width:769px) {
+  .mobile-only { display: none !important; }
+}
+
+@media(max-width:520px) {
+  .dashboard-kpi-grid { grid-template-columns: 1fr !important; }
+}
+
+@media(max-width:480px) {
+  .mes-grid { grid-template-columns: repeat(4, 1fr) !important; }
+  .hero-section-inner { padding: 0 16px !important; }
+  .shared-result-banner { padding: 0 16px !important; }
+  .header-primary-cta { padding: 8px 12px !important; font-size: 12px !important; }
+  .prolabore-toggle-row { display: grid !important; grid-template-columns: 1fr auto; align-items: start !important; }
+}

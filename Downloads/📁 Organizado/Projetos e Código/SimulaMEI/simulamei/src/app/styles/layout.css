@@ -1,0 +1,39 @@
+/* ── Layout shells & sections ──────────────────────────────── */
+.shared-result-banner { animation: fadeUp 360ms var(--ease-out) both; }
+.site-shell { position: relative; isolation: isolate; }
+.site-shell::after { content: ''; position: fixed; inset: 0; pointer-events: none; z-index: -1; background: linear-gradient(115deg, transparent 0 54%, oklch(88% 0.19 126 / 0.035) 54% 54.4%, transparent 54.4%), linear-gradient(70deg, transparent 0 62%, oklch(73% 0.18 52 / 0.03) 62% 62.35%, transparent 62.35%); }
+
+.section-shell { max-width: 1200px; margin: 0 auto; padding: 0 40px; }
+
+.im-section-header { display: grid; grid-template-columns: minmax(72px, 120px) minmax(0, 1fr); gap: clamp(18px, 4vw, 42px); align-items: start; margin-bottom: clamp(28px, 5vw, 58px); }
+.im-section-number { color: var(--text3); font-family: var(--mono); font-size: 12px; font-weight: 850; letter-spacing: 0.08em; text-transform: uppercase; }
+.im-section-title { color: var(--text1); font-size: clamp(28px, 4vw, 48px); font-weight: 900; letter-spacing: 0; line-height: 0.98; max-width: 720px; text-wrap: balance; }
+.im-section-lead { color: var(--text2); font-size: 15px; line-height: 1.75; max-width: 68ch; margin-top: 14px; }
+
+/* ── Instrument panels ─────────────────────────────────────── */
+.instrument-panel { background: linear-gradient(180deg, oklch(100% 0 0 / 0.025), transparent 42%), var(--bg1); border: 1px solid var(--border); border-radius: var(--radius-lg); box-shadow: var(--panel-shadow); overflow: hidden; }
+.instrument-panel-header { display: flex; justify-content: space-between; gap: 16px; align-items: center; padding: 13px 16px; border-bottom: 1px solid var(--border); background: oklch(100% 0 0 / 0.018); }
+.instrument-label { color: var(--text3); font-family: var(--mono); font-size: 11px; font-weight: 850; letter-spacing: 0.04em; text-transform: uppercase; }
+
+/* ── Evidence strip ────────────────────────────────────────── */
+.evidence-strip { display: flex; flex-wrap: wrap; gap: 8px; }
+.evidence-pill { display: inline-flex; align-items: center; gap: 6px; min-height: 30px; padding: 5px 9px; border: 1px solid var(--border); border-radius: var(--radius); background: var(--bg2); color: var(--text2); font-size: 12px; font-weight: 750; }
+.evidence-pill::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: var(--lime); box-shadow: 0 0 0 3px oklch(88% 0.19 126 / 0.12); }
+
+/* ── Floating section nav ──────────────────────────────────── */
+.floating-section-nav { position: fixed; left: 50%; bottom: 18px; transform: translateX(-50%); z-index: 160; display: flex; align-items: center; gap: 2px; max-width: calc(100vw - 24px); padding: 4px; border: 1px solid var(--border); border-radius: 999px; background: color-mix(in oklch, var(--bg1) 86%, transparent); backdrop-filter: blur(14px) saturate(150%); box-shadow: 0 20px 54px oklch(2% 0.01 255 / 0.32); }
+.floating-section-nav a { display: inline-flex; align-items: center; gap: 5px; min-height: 34px; padding: 7px 11px; border-radius: 999px; color: var(--text2); font-size: 12px; font-weight: 800; text-decoration: none; transition: background-color 180ms var(--ease-out), color 180ms var(--ease-out), transform 180ms var(--ease-out); }
+.floating-section-nav a[aria-current="true"] { background: var(--lime); color: var(--ink-on-accent); }
+.floating-section-nav span { font-family: var(--mono); font-size: 10px; opacity: 0.72; }
+
+.article-card-marker { width: 38px; height: 2px; border-radius: 999px; margin-bottom: 16px; }
+
+@media (hover: hover) and (pointer: fine) {
+  .floating-section-nav a:hover { background: var(--bg2); color: var(--text1); transform: translateY(-1px); }
+  .floating-section-nav a[aria-current="true"]:hover { background: var(--lime); color: var(--ink-on-accent); }
+}
+
+/* ── Hero gradient fade ────────────────────────────────────── */
+.hero-gradient-fade { position: absolute; bottom: 0; left: 0; right: 0; height: 80px; background: linear-gradient(to bottom, transparent, var(--bg0)); pointer-events: none; }
+.alert-banner { position: relative; overflow: hidden; }
+section { width: 100%; }

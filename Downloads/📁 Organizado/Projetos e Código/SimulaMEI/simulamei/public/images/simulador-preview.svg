@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="880" height="560" viewBox="0 0 880 560" role="img" aria-labelledby="title desc">
+  <title id="title">Preview do resultado do simulador SimulaMEI</title>
+  <desc id="desc">Tela resumida do simulador mostrando uso do teto MEI, projeção anual, Fator R e economia estimada.</desc>
+  <rect width="880" height="560" rx="28" fill="#0f1117"/>
+  <rect x="32" y="32" width="816" height="496" rx="22" fill="#171a22" stroke="#2b303a"/>
+  <text x="64" y="86" fill="#8f98a8" font-family="Inter, Arial, sans-serif" font-size="20">Resultado da simulação</text>
+  <text x="64" y="132" fill="#f4f6f8" font-family="Inter, Arial, sans-serif" font-size="44" font-weight="700">83% do teto MEI usado</text>
+  <rect x="64" y="162" width="752" height="18" rx="9" fill="#252b35"/>
+  <rect x="64" y="162" width="624" height="18" rx="9" fill="#f5c84b"/>
+  <g font-family="Inter, Arial, sans-serif">
+    <rect x="64" y="224" width="224" height="126" rx="16" fill="#10131a" stroke="#2b303a"/>
+    <text x="88" y="264" fill="#8f98a8" font-size="18">Projeção 12m</text>
+    <text x="88" y="310" fill="#f5c84b" font-size="34" font-weight="700">R$ 162 mil</text>
+    <rect x="328" y="224" width="224" height="126" rx="16" fill="#10131a" stroke="#2b303a"/>
+    <text x="352" y="264" fill="#8f98a8" font-size="18">Fator R</text>
+    <text x="352" y="310" fill="#c8f135" font-size="34" font-weight="700">28,0%</text>
+    <rect x="592" y="224" width="224" height="126" rx="16" fill="#10131a" stroke="#2b303a"/>
+    <text x="616" y="264" fill="#8f98a8" font-size="18">Economia</text>
+    <text x="616" y="310" fill="#c8f135" font-size="34" font-weight="700">R$ 12,4k</text>
+    <rect x="64" y="390" width="752" height="82" rx="18" fill="#1d2617" stroke="#40531a"/>
+    <text x="88" y="424" fill="#c8f135" font-size="20" font-weight="700">Próximo passo</text>
+    <text x="88" y="456" fill="#d8dde6" font-size="18">Compartilhe o resultado com seu contador antes do desenquadramento.</text>
+  </g>
+</svg>
