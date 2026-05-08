@@ -20,8 +20,8 @@ export function ContadoresSection() {
     <section id="contadores" style={{ padding: '96px 0 110px', background: 'var(--bg1)', borderTop: '1px solid var(--border)' }}>
       <div className="section-shell">
         <div className="im-section-header">
-          <span className="im-section-number">03 / Contadores</span>
-          <div>
+          <span className="im-section-number" data-reveal>03 / Contadores</span>
+          <div data-reveal style={{ '--reveal-delay': '80' } as React.CSSProperties}>
             <h2 className="im-section-title">Um painel de carteira antes da urgência aparecer.</h2>
             <p className="im-section-lead">
               A versão para escritórios transforma simulações avulsas em triagem recorrente: clientes em risco, relatórios por conversa e alertas de teto.
@@ -33,19 +33,20 @@ export function ContadoresSection() {
           className="cnt-grid"
         >
           {/* Left: pitch */}
-          <div className="instrument-panel" style={{ padding: 28 }}>
-            <div className="instrument-panel-header" style={{ margin: '-28px -28px 26px' }}>
+          <div className="instrument-panel" data-reveal style={{ '--reveal-delay': '160' } as React.CSSProperties}>
+            <div className="instrument-panel-header">
               <span className="instrument-label">Rotina do escritório</span>
               <span style={{ color: 'var(--orange)', fontSize: 12, fontWeight: 900 }}>150+ clientes</span>
             </div>
 
+            <div style={{ padding: 28 }}>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 13, marginBottom: 28 }}>
               {FEATURES.map((item, i) => (
                 <div key={i} style={{ display: 'grid', gridTemplateColumns: '34px minmax(0, 1fr)', gap: 12, alignItems: 'center', fontSize: 14, color: 'var(--text2)' }}>
                   <span style={{
                     color: 'var(--orange)',
-                    border: '1px solid rgba(255,140,0,0.24)',
-                    background: 'rgba(255,140,0,0.08)',
+                    border: '1px solid oklch(73% 0.18 52 / 0.26)',
+                    background: 'oklch(73% 0.18 52 / 0.09)',
                     borderRadius: 'var(--radius)',
                     height: 28,
                     display: 'inline-flex',
@@ -69,7 +70,7 @@ export function ContadoresSection() {
                   className="surface-hover"
                   style={{
                     border: `1px solid ${plan.highlight ? 'var(--orange)' : 'var(--border)'}`,
-                    background: plan.highlight ? 'rgba(255,140,0,0.06)' : 'var(--bg2)',
+                    background: plan.highlight ? 'oklch(73% 0.18 52 / 0.07)' : 'var(--bg2)',
                     borderRadius: 'var(--radius)',
                     padding: '12px 14px',
                     display: 'flex',
@@ -116,19 +117,25 @@ export function ContadoresSection() {
                 Cancele quando quiser · Garantia de 7 dias (CDC, art. 49) · Sem fidelidade
               </span>
             </div>
+            </div>{/* /padding wrapper */}
           </div>
 
           {/* Right: formulário unificado */}
-          <div id="contadores-form" style={{
-            background: 'var(--bg2)', borderRadius: 'var(--radius-lg)',
-            padding: '32px 36px', border: '1px solid var(--border)',
-            boxShadow: 'var(--panel-shadow)',
-          }}>
-            <h3 style={{ fontSize: 18, fontWeight: 700, marginBottom: 6 }}>Acesso para escritórios</h3>
+          <div
+            id="contadores-form"
+            className="instrument-panel"
+            data-reveal
+            style={{ '--reveal-delay': '220' } as React.CSSProperties}
+          >
+            <div className="instrument-panel-header">
+              <span className="instrument-label">Acesso para escritórios</span>
+            </div>
+            <div style={{ padding: '24px 28px' }}>
             <p style={{ fontSize: 13, color: 'var(--text2)', marginBottom: 24 }}>
               Plano contador com clientes ilimitados e relatórios com sua marca.
             </p>
             <AccountantLeadForm source="home" />
+            </div>{/* /padding wrapper */}
           </div>
         </div>
       </div>

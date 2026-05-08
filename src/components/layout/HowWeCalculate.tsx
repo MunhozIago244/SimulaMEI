@@ -30,8 +30,8 @@ export function HowWeCalculate() {
     <section id="como-calcula" style={{ padding: '96px 0', borderTop: '1px solid var(--border)' }}>
       <div className="section-shell">
         <div className="im-section-header">
-          <span className="im-section-number">02 / Método</span>
-          <div>
+          <span className="im-section-number" data-reveal>02 / Método</span>
+          <div data-reveal style={{ '--reveal-delay': '80' } as React.CSSProperties}>
             <h2 className="im-section-title">O cálculo mostra a fonte antes de pedir confiança.</h2>
             <p className="im-section-lead">
               A saída não é uma opinião solta. Ela combina teto, projeção anual, CNAE, Fator R e regime provável em uma leitura auditável.
@@ -41,10 +41,8 @@ export function HowWeCalculate() {
 
         <div
           className="instrument-panel"
-          style={{
-            display: 'grid',
-            gridTemplateColumns: 'minmax(260px, 0.82fr) minmax(0, 1.18fr)',
-          }}
+          data-reveal
+          style={{ '--reveal-delay': '160', display: 'grid', gridTemplateColumns: 'minmax(260px, 0.82fr) minmax(0, 1.18fr)' } as React.CSSProperties}
         >
           <div style={{
             padding: '28px 30px',
@@ -107,16 +105,20 @@ export function HowWeCalculate() {
           </ol>
         </div>
 
-        <div style={{
-          marginTop: 18,
-          background: 'var(--bg2)',
-          border: '1px solid var(--border)',
-          borderRadius: 'var(--radius)',
-          padding: '16px 18px',
-          display: 'flex',
-          gap: 14,
-          alignItems: 'flex-start',
-        }}>
+        <div
+          data-reveal
+          style={{
+            '--reveal-delay': '240',
+            marginTop: 18,
+            background: 'var(--bg2)',
+            border: '1px solid var(--border)',
+            borderRadius: 'var(--radius)',
+            padding: '16px 18px',
+            display: 'flex',
+            gap: 14,
+            alignItems: 'flex-start',
+          } as React.CSSProperties}
+        >
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--blue)" strokeWidth="2" style={{ flexShrink: 0, marginTop: 1 }}>
             <circle cx="12" cy="12" r="10"/>
             <line x1="12" y1="8" x2="12" y2="12"/>
