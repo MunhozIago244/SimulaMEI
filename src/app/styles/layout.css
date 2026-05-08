@@ -28,6 +28,33 @@
 
 .article-card-marker { width: 38px; height: 2px; border-radius: 999px; margin-bottom: 16px; }
 
+/* ── Hero CTA hover states ─────────────────────────────────── */
+.hero-cta-primary {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 16px 28px;
+  background: var(--lime); color: var(--ink-on-accent);
+  border-radius: var(--radius); font-weight: 800; font-size: 16px;
+  transition:
+    transform 200ms var(--ease-out),
+    box-shadow 200ms var(--ease-out);
+}
+.hero-cta-primary:hover { transform: translateY(-3px); box-shadow: var(--lime-glow); }
+
+.hero-cta-secondary {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 16px 24px;
+  background: none; color: var(--text2);
+  border: 1px solid var(--border2); border-radius: var(--radius);
+  font-weight: 500; font-size: 15px;
+  transition:
+    border-color 180ms ease,
+    color 180ms ease,
+    transform 200ms var(--ease-out);
+}
+.hero-cta-secondary:hover { border-color: var(--text2); color: var(--text1); transform: translateY(-1px); }
+.hero-cta-secondary:hover .hero-arrow { transform: translateX(4px); }
+.hero-arrow { display: inline-block; transition: transform 160ms var(--ease-out); }
+
 @media (hover: hover) and (pointer: fine) {
   .floating-section-nav a:hover { background: var(--bg2); color: var(--text1); transform: translateY(-1px); }
   .floating-section-nav a[aria-current="true"]:hover { background: var(--lime); color: var(--ink-on-accent); }

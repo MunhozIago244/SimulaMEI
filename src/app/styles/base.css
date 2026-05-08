@@ -57,7 +57,7 @@ textarea:focus-visible {
 ::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 3px; }
 
 /* ── Animations ─────────────────────────────────────────────── */
-@keyframes fadeUp    { from { opacity:0; transform:translateY(16px); } to { opacity:1; transform:translateY(0); } }
+@keyframes fadeUp    { from { opacity:0; transform:translateY(20px); } to { opacity:1; transform:translateY(0); } }
 @keyframes slideIn   { from { opacity:0; transform:translateX(-12px); } to { opacity:1; transform:translateX(0); } }
 @keyframes pulse     { 0%,100% { opacity:1; } 50% { opacity:.5; } }
 @keyframes spin      { to { transform: rotate(360deg); } }
@@ -65,9 +65,25 @@ textarea:focus-visible {
 @keyframes scoreArc  { from { stroke-dashoffset: 283; } }
 @keyframes shimmer   { 0% { background-position: -200% 0; } 100% { background-position: 200% 0; } }
 
-.fade-up   { animation: fadeUp .4s ease forwards; }
-.fade-up-2 { animation: fadeUp .4s .1s ease both; }
-.fade-up-3 { animation: fadeUp .4s .2s ease both; }
+.fade-up   { animation: fadeUp .55s var(--ease-out) both; }
+.fade-up-2 { animation: fadeUp .55s 0.09s var(--ease-out) both; }
+.fade-up-3 { animation: fadeUp .55s 0.18s var(--ease-out) both; }
+.fade-up-4 { animation: fadeUp .55s 0.27s var(--ease-out) both; }
+.fade-up-5 { animation: fadeUp .55s 0.36s var(--ease-out) both; }
+
+/* ── Scroll-reveal system ───────────────────────────────────── */
+[data-reveal] {
+  opacity: 0;
+  transform: translateY(22px);
+  transition:
+    opacity 600ms var(--ease-out),
+    transform 600ms var(--ease-out);
+  transition-delay: calc(var(--reveal-delay, 0) * 1ms);
+}
+[data-reveal].is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
 
 /* ── Utilities ──────────────────────────────────────────────── */
 .mono    { font-family: var(--mono); }

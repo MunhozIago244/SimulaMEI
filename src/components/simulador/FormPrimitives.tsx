@@ -20,16 +20,28 @@ export interface ValidationMsg {
 }
 
 export function Validation({ validation }: { validation: ValidationMsg | null }) {
-  if (!validation?.msg) return null
   const colorMap = { error: 'var(--red)', warn: 'var(--yellow)', ok: 'var(--lime)' }
-  const iconMap = { error: '✕', warn: '!', ok: '✓' }
+  const iconMap = { error: '✕', warn: '▲', ok: '✓' }
+  const active = Boolean(validation?.msg)
   return (
     <div style={{
-      fontSize: 12, color: colorMap[validation.type],
-      marginTop: 5, display: 'flex', alignItems: 'center', gap: 4,
+      maxHeight: active ? 44 : 0,
+      opacity: active ? 1 : 0,
+      overflow: 'hidden',
+      transition: 'max-height 220ms var(--ease-out), opacity 180ms var(--ease-out)',
+      marginTop: active ? 6 : 0,
     }}>
-      <span>{iconMap[validation.type]}</span>
-      {validation.msg}
+      {validation?.msg && (
+        <div style={{
+          fontSize: 12, color: colorMap[validation.type],
+          display: 'flex', alignItems: 'flex-start', gap: 5, lineHeight: 1.5,
+        }}>
+          <span style={{ fontFamily: 'var(--mono)', fontSize: 10, fontWeight: 800, flexShrink: 0, marginTop: 1 }}>
+            {iconMap[validation.type]}
+          </span>
+          {validation.msg}
+        </div>
+      )}
     </div>
   )
 }
