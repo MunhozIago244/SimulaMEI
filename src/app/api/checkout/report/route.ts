@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
-import { getCheckoutUrl, getStripeClient, isStripeConfigured, STRIPE_PRODUCTS } from '@/lib/stripe'
+import { createBrandedCheckoutSession, isStripeConfigured, STRIPE_PRODUCTS } from '@/lib/stripe'
 
 export async function POST() {
   const supabase = await createClient()
@@ -14,21 +14,11 @@ export async function POST() {
     return NextResponse.json({ error: 'Stripe ainda não está configurado neste ambiente.' }, { status: 503 })
   }
 
-  const session = await getStripeClient().checkout.sessions.create({
+  const session = await createBrandedCheckoutSession({
+    product: 'relatorio',
+    userId: user.id,
+    userEmail: user.email,
     mode: 'payment',
-    customer_email: user.email ?? undefined,
-    line_items: [
-      {
-        price: STRIPE_PRODUCTS.relatorio.priceId,
-        quantity: 1,
-      },
-    ],
-    success_url: getCheckoutUrl(STRIPE_PRODUCTS.relatorio.successPath),
-    cancel_url: getCheckoutUrl(STRIPE_PRODUCTS.relatorio.cancelPath),
-    metadata: {
-      user_id: user.id,
-      produto: STRIPE_PRODUCTS.relatorio.product,
-    },
   })
 
   await supabase.from('purchases').insert({

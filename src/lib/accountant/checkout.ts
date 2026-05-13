@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server'
 import { createAdminClient } from '@/lib/supabase/admin'
 import { createClient } from '@/lib/supabase/server'
-import { getCheckoutUrl, getStripeClient, isStripeConfigured } from '@/lib/stripe'
+import { createBrandedCheckoutSession, isStripeConfigured } from '@/lib/stripe'
 import { getCurrentAccountantOffice } from './server'
 import {
   getAccountantStripeProduct,
@@ -50,27 +50,14 @@ export async function createAccountantCheckout(plan: AccountantPaidPlan) {
     )
   }
 
-  const metadata = {
-    user_id: user.id,
-    office_id: office.id,
-    produto: product.product,
-    plan,
-  }
-  const session = await getStripeClient().checkout.sessions.create({
+  const session = await createBrandedCheckoutSession({
+    product: plan === 'pro' ? 'accountant_pro' : 'accountant_starter',
+    userId: user.id,
+    userEmail: user.email,
     mode: 'subscription',
-    customer_email: user.email ?? undefined,
-    client_reference_id: office.id,
-    line_items: [
-      {
-        price: product.priceId,
-        quantity: 1,
-      },
-    ],
-    success_url: getCheckoutUrl(product.successPath),
-    cancel_url: getCheckoutUrl(product.cancelPath),
-    metadata,
-    subscription_data: {
-      metadata,
+    extraMetadata: {
+      office_id: office.id,
+      plan,
     },
   })
 
