@@ -5,14 +5,14 @@ const {
   createClientMock,
   createAdminClientMock,
   getCurrentAccountantOfficeMock,
-  stripeCheckoutCreateMock,
+  createBrandedCheckoutSessionMock,
   isStripeConfiguredMock,
   upsertSubscriptionMock,
 } = vi.hoisted(() => ({
   createClientMock: vi.fn(),
   createAdminClientMock: vi.fn(),
   getCurrentAccountantOfficeMock: vi.fn(),
-  stripeCheckoutCreateMock: vi.fn(),
+  createBrandedCheckoutSessionMock: vi.fn(),
   isStripeConfiguredMock: vi.fn(),
   upsertSubscriptionMock: vi.fn(),
 }))
@@ -47,13 +47,7 @@ vi.mock('@/lib/stripe', () => ({
     },
   },
   getCheckoutUrl: (path: string) => `http://localhost:3000${path}`,
-  getStripeClient: () => ({
-    checkout: {
-      sessions: {
-        create: stripeCheckoutCreateMock,
-      },
-    },
-  }),
+  createBrandedCheckoutSession: createBrandedCheckoutSessionMock,
   isStripeConfigured: isStripeConfiguredMock,
 }))
 
@@ -103,7 +97,7 @@ describe('/api/checkout/accountant-starter POST', () => {
     createClientMock.mockResolvedValue(makeServerClient())
     createAdminClientMock.mockReturnValue(makeAdminClient())
     getCurrentAccountantOfficeMock.mockResolvedValue({ office: OFFICE, error: null })
-    stripeCheckoutCreateMock.mockResolvedValue({
+    createBrandedCheckoutSessionMock.mockResolvedValue({
       id: 'cs_starter_1',
       url: 'https://checkout.stripe.com/cs_starter_1',
     })
@@ -119,7 +113,7 @@ describe('/api/checkout/accountant-starter POST', () => {
     await expect(response.json()).resolves.toEqual({
       error: 'Autenticação obrigatória para assinar o plano contador.',
     })
-    expect(stripeCheckoutCreateMock).not.toHaveBeenCalled()
+    expect(createBrandedCheckoutSessionMock).not.toHaveBeenCalled()
   })
 
   it('requires an existing accountant office', async () => {
@@ -131,7 +125,7 @@ describe('/api/checkout/accountant-starter POST', () => {
     await expect(response.json()).resolves.toEqual({
       error: 'Crie o escritório contador antes de assinar um plano.',
     })
-    expect(stripeCheckoutCreateMock).not.toHaveBeenCalled()
+    expect(createBrandedCheckoutSessionMock).not.toHaveBeenCalled()
   })
 
   it('creates a subscription checkout session linked to the office and records it as pending', async () => {
@@ -142,26 +136,14 @@ describe('/api/checkout/accountant-starter POST', () => {
       url: 'https://checkout.stripe.com/cs_starter_1',
     })
 
-    expect(stripeCheckoutCreateMock).toHaveBeenCalledWith(expect.objectContaining({
+    expect(createBrandedCheckoutSessionMock).toHaveBeenCalledWith(expect.objectContaining({
+      product: 'accountant_starter',
+      userId: 'user-1',
+      userEmail: 'ana@contabil.com',
       mode: 'subscription',
-      customer_email: 'ana@contabil.com',
-      client_reference_id: 'office-1',
-      line_items: [{ price: 'price_starter', quantity: 1 }],
-      success_url: 'http://localhost:3000/upgrade/contador?checkout=success&plan=starter',
-      cancel_url: 'http://localhost:3000/upgrade/contador?checkout=cancel&plan=starter',
-      metadata: expect.objectContaining({
-        user_id: 'user-1',
+      extraMetadata: expect.objectContaining({
         office_id: 'office-1',
-        produto: 'accountant_starter',
         plan: 'starter',
-      }),
-      subscription_data: expect.objectContaining({
-        metadata: expect.objectContaining({
-          user_id: 'user-1',
-          office_id: 'office-1',
-          produto: 'accountant_starter',
-          plan: 'starter',
-        }),
       }),
     }))
 

@@ -1,8 +1,8 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
-const { createClientMock, stripeCheckoutCreateMock, isStripeConfiguredMock, insertMock } = vi.hoisted(() => ({
+const { createClientMock, createBrandedCheckoutSessionMock, isStripeConfiguredMock, insertMock } = vi.hoisted(() => ({
   createClientMock: vi.fn(),
-  stripeCheckoutCreateMock: vi.fn(),
+  createBrandedCheckoutSessionMock: vi.fn(),
   isStripeConfiguredMock: vi.fn(),
   insertMock: vi.fn(),
 }))
@@ -22,7 +22,7 @@ vi.mock('@/lib/stripe', () => ({
     },
   },
   getCheckoutUrl: (path: string) => `http://localhost:3000${path}`,
-  getStripeClient: () => ({ checkout: { sessions: { create: stripeCheckoutCreateMock } } }),
+  createBrandedCheckoutSession: createBrandedCheckoutSessionMock,
   isStripeConfigured: isStripeConfiguredMock,
 }))
 
@@ -41,7 +41,7 @@ describe('/api/checkout/report POST', () => {
   beforeEach(() => {
     vi.clearAllMocks()
     isStripeConfiguredMock.mockReturnValue(true)
-    stripeCheckoutCreateMock.mockResolvedValue({ id: 'cs_report_1', url: 'https://checkout.stripe.com/report' })
+    createBrandedCheckoutSessionMock.mockResolvedValue({ id: 'cs_report_1', url: 'https://checkout.stripe.com/report' })
     insertMock.mockResolvedValue({ error: null })
   })
 
@@ -51,7 +51,7 @@ describe('/api/checkout/report POST', () => {
     const response = await POST()
 
     expect(response.status).toBe(401)
-    expect(stripeCheckoutCreateMock).not.toHaveBeenCalled()
+    expect(createBrandedCheckoutSessionMock).not.toHaveBeenCalled()
   })
 
   it('creates a payment checkout session and records the pending purchase', async () => {
@@ -61,10 +61,11 @@ describe('/api/checkout/report POST', () => {
 
     expect(response.status).toBe(200)
     await expect(response.json()).resolves.toEqual({ url: 'https://checkout.stripe.com/report' })
-    expect(stripeCheckoutCreateMock).toHaveBeenCalledWith(expect.objectContaining({
+    expect(createBrandedCheckoutSessionMock).toHaveBeenCalledWith(expect.objectContaining({
+      product: 'relatorio',
+      userId: 'user-1',
+      userEmail: 'user@example.com',
       mode: 'payment',
-      customer_email: 'user@example.com',
-      line_items: [{ price: 'price_report', quantity: 1 }],
     }))
     expect(insertMock).toHaveBeenCalledWith(expect.objectContaining({
       user_id: 'user-1',
