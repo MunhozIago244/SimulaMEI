@@ -201,12 +201,20 @@ export default async function DashboardPage() {
     })
     : null
   const monitorTransition = detectAnexoTransition(monitorRows)
+  const faturamentoMedio = monitorRows.length > 0
+    ? monitorRows.reduce((sum, r) => sum + r.faturamentoMes, 0) / monitorRows.length
+    : (profile?.faturamento_mensal_estimado ?? 0)
   const calendarItems = getFiscalCalendarItems({
-    mes: monitorRows.at(-1)?.mes ?? profile?.mes_atual ?? currentMonth,
     nome: profile?.nome ?? user.email?.split('@')[0] ?? 'Sua conta',
     tipoMei: profile?.tipo_mei ?? 'geral',
     anexoAtual: latest?.anexoAtual ?? 'III',
     elegivelFatorR: Boolean(latest?.fatorR),
+    usoTeto,
+    fatorRAtual: monitorSummary?.fatorRAtual ?? latest?.fatorR?.fatorR ?? 0,
+    faturamentoMedio,
+    ultimoLancamentoMes: monitorRows.at(-1)?.mes ?? null,
+    ultimoLancamentoAno: monitorRows.at(-1)?.ano ?? null,
+    totalLancamentos: monitorRows.length,
   })
   const completedPerspectiveCount = [
     Boolean(latest),
@@ -627,25 +635,54 @@ export default async function DashboardPage() {
                 <h2 style={{ fontSize: 16, fontWeight: 800, margin: 0 }}>Calendário fiscal</h2>
               </div>
               <div style={{ padding: '16px 24px', display: 'flex', flexDirection: 'column', gap: 0 }}>
-                {calendarItems.map((item, i, arr) => (
-                  <div key={item.title} style={{ padding: '12px 0', borderBottom: i < arr.length - 1 ? '1px solid var(--border)' : 'none', display: 'flex', gap: 12, alignItems: 'flex-start' }}>
-                    <div style={{ width: 32, height: 32, borderRadius: 8, background: item.channel === 'email' ? 'rgba(200,241,53,0.1)' : 'rgba(96,165,250,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke={item.channel === 'email' ? 'var(--lime)' : 'var(--blue)'} strokeWidth="2">
-                        {item.channel === 'email'
-                          ? <><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></>
-                          : <><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></>
-                        }
-                      </svg>
+                {calendarItems.map((item, i, arr) => {
+                  // Cor base da severidade
+                  const severityColors = {
+                    critico: { fg: 'var(--red)', bg: 'rgba(255,59,59,0.08)', border: 'rgba(255,59,59,0.2)' },
+                    atencao: { fg: 'var(--yellow)', bg: 'rgba(245,197,66,0.08)', border: 'rgba(245,197,66,0.2)' },
+                    ok: { fg: 'var(--lime)', bg: 'rgba(200,241,53,0.08)', border: 'rgba(200,241,53,0.2)' },
+                    info: { fg: 'var(--blue)', bg: 'rgba(96,165,250,0.08)', border: 'rgba(96,165,250,0.2)' },
+                  } as const
+                  const sev = severityColors[item.severity ?? 'info']
+                  return (
+                    <div
+                      key={item.title}
+                      style={{
+                        padding: '12px 0',
+                        borderBottom: i < arr.length - 1 ? '1px solid var(--border)' : 'none',
+                        display: 'flex', gap: 12, alignItems: 'flex-start',
+                      }}
+                    >
+                      <div style={{
+                        width: 32, height: 32, borderRadius: 8,
+                        background: sev.bg, border: `1px solid ${sev.border}`,
+                        display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
+                      }}>
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke={sev.fg} strokeWidth="2">
+                          {item.channel === 'email' ? (
+                            <><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></>
+                          ) : item.channel === 'alerta' ? (
+                            <><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></>
+                          ) : (
+                            <><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></>
+                          )}
+                        </svg>
+                      </div>
+                      <div style={{ flex: 1, minWidth: 0 }}>
+                        <div style={{ fontSize: 13, fontWeight: 700, marginBottom: 2, color: 'var(--text1)' }}>{item.title}</div>
+                        <p style={{ color: 'var(--text3)', fontSize: 11, lineHeight: 1.55, margin: 0 }}>{item.body}</p>
+                      </div>
+                      <span style={{
+                        fontSize: 10, fontWeight: 700,
+                        color: sev.fg, background: sev.bg, border: `1px solid ${sev.border}`,
+                        padding: '3px 7px', borderRadius: 4,
+                        flexShrink: 0, whiteSpace: 'nowrap', textTransform: 'uppercase', letterSpacing: '0.04em',
+                      }}>
+                        {item.severity === 'critico' ? 'urgente' : item.severity === 'atencao' ? 'atenção' : item.severity === 'ok' ? 'em dia' : item.channel}
+                      </span>
                     </div>
-                    <div style={{ flex: 1, minWidth: 0 }}>
-                      <div style={{ fontSize: 13, fontWeight: 700, marginBottom: 2 }}>{item.title}</div>
-                      <p style={{ color: 'var(--text3)', fontSize: 11, lineHeight: 1.55, margin: 0 }}>{item.body}</p>
-                    </div>
-                    <span style={{ fontSize: 10, fontWeight: 700, color: item.channel === 'email' ? 'var(--lime)' : 'var(--blue)', background: item.channel === 'email' ? 'rgba(200,241,53,0.1)' : 'rgba(96,165,250,0.1)', padding: '3px 7px', borderRadius: 4, flexShrink: 0, whiteSpace: 'nowrap' }}>
-                      {item.channel}
-                    </span>
-                  </div>
-                ))}
+                  )
+                })}
 
                 {latest?.fatorR && latest.alertaTeto.projecaoAnual > 0 && (
                   <div style={{ marginTop: 16, paddingTop: 16, borderTop: '1px solid var(--border)' }}>

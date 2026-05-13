@@ -34,11 +34,12 @@ export async function GET(request: Request) {
   let sent = 0
   for (const profile of rows) {
     const items = getFiscalCalendarItems({
-      mes: profile.mes_atual ?? new Date().getMonth() + 1,
       nome: profile.nome ?? 'Cliente',
       tipoMei: profile.tipo_mei ?? 'geral',
       anexoAtual: 'III',
       elegivelFatorR: false,
+      // Cron sem contexto rico do dashboard — usa defaults seguros pra DAS/DEFIS apenas
+      totalLancamentos: 0,
     })
 
     const result = await sendFiscalCalendarEmail({

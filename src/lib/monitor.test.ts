@@ -41,17 +41,45 @@ describe('detectAnexoTransition', () => {
 })
 
 describe('getFiscalCalendarItems', () => {
-  it('gera agenda fiscal coerente com o mês e perfil', () => {
+  it('gera agenda fiscal contextualizada ao estado do usuário', () => {
+    // Fixar data pra teste determinístico (julho/2026, dia 10)
     const items = getFiscalCalendarItems({
-      mes: 7,
+      refDate: new Date(2026, 6, 10), // Jul 10, 2026
       nome: 'Ana',
       tipoMei: 'geral' satisfies TipoMei,
-      anexoAtual: 'III',
+      anexoAtual: 'V',
       elegivelFatorR: true,
+      usoTeto: 0.65,
+      fatorRAtual: 0.15,
+      faturamentoMedio: 10000,
+      ultimoLancamentoMes: 6,
+      ultimoLancamentoAno: 2026,
+      totalLancamentos: 6,
     })
 
-    expect(items.length).toBeGreaterThanOrEqual(3)
-    expect(items[0].title).toContain('Julho')
-    expect(items.some(item => item.channel === 'email')).toBe(true)
+    // Sempre inclui DAS do mês (julho)
+    expect(items.some(item => item.title.includes('Julho'))).toBe(true)
+    expect(items.some(item => item.title.includes('DAS'))).toBe(true)
+    // Uso de teto > 50% gera item informativo
+    expect(items.some(item => item.title.includes('teto'))).toBe(true)
+    // Fator R abaixo de 28% gera sugestão de ajuste
+    expect(items.some(item => item.title.includes('Fator R'))).toBe(true)
+    // Sem lançamento do mês corrente (já é dia 10 e último foi junho)
+    expect(items.some(item => item.title.includes('ainda não registrado'))).toBe(true)
+    // Pelo menos uma severidade de atenção/crítico
+    expect(items.some(item => item.severity === 'atencao' || item.severity === 'critico')).toBe(true)
+  })
+
+  it('placeholder quando não há lançamentos ainda', () => {
+    const items = getFiscalCalendarItems({
+      refDate: new Date(2026, 0, 3), // 3 de janeiro
+      nome: 'Iago',
+      tipoMei: 'geral' satisfies TipoMei,
+      anexoAtual: 'III',
+      elegivelFatorR: false,
+      totalLancamentos: 0,
+    })
+
+    expect(items.some(item => item.title.includes('Comece pelo primeiro lançamento'))).toBe(true)
   })
 })
