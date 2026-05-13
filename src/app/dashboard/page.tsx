@@ -16,6 +16,7 @@ import { DeleteAccountSection } from '@/components/dashboard/DeleteAccountSectio
 import { MonthlyMonitorSection } from '@/components/dashboard/MonthlyMonitorSection'
 import { Panel } from '@/components/dashboard/Panel'
 import { Pill } from '@/components/dashboard/Pill'
+import { ThemeToggle } from '@/components/theme/ThemeToggle'
 import { isAdminEmail } from '@/lib/auth/admin-access'
 import { fmt, fmtPct } from '@/lib/format'
 import { isOnboardingComplete, type UserProfileOnboarding } from '@/lib/onboarding'
@@ -332,7 +333,8 @@ export default async function DashboardPage() {
               <Pill color={PLAN_ACCENT_COLORS[currentPlan]}>
                 {PLAN_LABELS[currentPlan]}
               </Pill>
-              <Link href="/" style={{ fontSize: 12, color: 'var(--text3)', textDecoration: 'none' }}>
+              <ThemeToggle size={32} />
+              <Link href="/?from=dashboard" style={{ fontSize: 12, color: 'var(--text3)', textDecoration: 'none' }}>
                 ← Simulador
               </Link>
             </div>

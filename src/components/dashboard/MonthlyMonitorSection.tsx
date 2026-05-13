@@ -112,12 +112,9 @@ export function MonthlyMonitorSection({
 
   return (
     <div style={{ display: 'grid', gap: 18 }}>
-      <div>
-        <h3 style={{ fontSize: 18, margin: '0 0 6px' }}>Monitor mensal</h3>
-        <p style={{ color: 'var(--text2)', fontSize: 13, lineHeight: 1.7, margin: 0 }}>
-          Atualize o mês corrente para recalcular DAS, Fator R e alertas de mudança de anexo.
-        </p>
-      </div>
+      <p style={{ color: 'var(--text2)', fontSize: 13, lineHeight: 1.7, margin: 0 }}>
+        Atualize o mês corrente para recalcular DAS, Fator R e alertas de mudança de anexo.
+      </p>
 
       {monthlyInputsError && (
         <div style={{

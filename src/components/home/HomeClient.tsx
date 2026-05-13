@@ -30,46 +30,14 @@ import { SimulatorSection } from '@/components/simulador/SimulatorSection'
 import { PartialResults } from '@/components/resultado/PartialResults'
 import { FullResults } from '@/components/resultado/FullResults'
 
-type Theme = 'dark' | 'light'
-
-const THEME_KEY = 'simulamei-theme'
-const THEME_CHANGE_EVENT = 'simulamei-theme-change'
+import {
+  readStoredTheme,
+  subscribeThemeChange,
+  getServerThemeSnapshot,
+} from '@/lib/theme'
 
 interface HomeClientProps {
   initialResultado?: ResultadoSimulacao | null
-}
-
-function readStoredTheme(): Theme {
-  if (typeof window === 'undefined') return 'dark'
-
-  try {
-    const saved = window.localStorage.getItem(THEME_KEY)
-    return saved === 'dark' || saved === 'light' ? saved : 'dark'
-  } catch {
-    return 'dark'
-  }
-}
-
-function subscribeThemeChange(onStoreChange: () => void) {
-  window.addEventListener(THEME_CHANGE_EVENT, onStoreChange)
-  window.addEventListener('storage', onStoreChange)
-
-  return () => {
-    window.removeEventListener(THEME_CHANGE_EVENT, onStoreChange)
-    window.removeEventListener('storage', onStoreChange)
-  }
-}
-
-function getServerThemeSnapshot(): Theme {
-  return 'dark'
-}
-
-function saveTheme(theme: Theme) {
-  try {
-    window.localStorage.setItem(THEME_KEY, theme)
-  } catch {}
-
-  window.dispatchEvent(new Event(THEME_CHANGE_EVENT))
 }
 
 export function HomeClient({ initialResultado = null }: HomeClientProps) {
@@ -98,10 +66,6 @@ export function HomeClient({ initialResultado = null }: HomeClientProps) {
     document.documentElement.setAttribute('data-theme', theme)
   }, [theme])
 
-  const handleToggleTheme = useCallback(() => {
-    saveTheme(theme === 'dark' ? 'light' : 'dark')
-  }, [theme])
-
   const handleResults = useCallback((res: ResultadoSimulacao) => {
     setResultado(res)
     setIsSharedResult(false)
@@ -127,7 +91,7 @@ export function HomeClient({ initialResultado = null }: HomeClientProps) {
       >
         Pular para o conteúdo
       </a>
-      <Header theme={theme} onToggle={handleToggleTheme} />
+      <Header />
       <SectionNav
         items={[
           { id: 'inicio', label: 'Início' },
