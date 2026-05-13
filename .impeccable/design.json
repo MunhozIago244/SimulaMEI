@@ -1,0 +1,139 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-05-08T00:00:00Z",
+  "title": "Design System: SimulaMEI",
+  "extensions": {
+    "colorMeta": {
+      "bg-void":       { "role": "neutral",   "displayName": "Void",            "canonical": "oklch(8% 0.012 255)",   "tonalRamp": ["oklch(4% 0.008 255)", "oklch(8% 0.012 255)", "oklch(12% 0.018 255)", "oklch(17% 0.022 255)", "oklch(22% 0.024 255)", "oklch(33% 0.026 255)", "oklch(51% 0.024 255)", "oklch(70% 0.018 255)"] },
+      "bg-base":       { "role": "neutral",   "displayName": "Base",            "canonical": "oklch(12% 0.018 255)",  "tonalRamp": ["oklch(4% 0.008 255)", "oklch(8% 0.012 255)", "oklch(12% 0.018 255)", "oklch(17% 0.022 255)", "oklch(22% 0.024 255)", "oklch(33% 0.026 255)", "oklch(51% 0.024 255)", "oklch(70% 0.018 255)"] },
+      "bg-raised":     { "role": "neutral",   "displayName": "Raised",          "canonical": "oklch(17% 0.022 255)",  "tonalRamp": ["oklch(4% 0.008 255)", "oklch(8% 0.012 255)", "oklch(12% 0.018 255)", "oklch(17% 0.022 255)", "oklch(22% 0.024 255)", "oklch(33% 0.026 255)", "oklch(51% 0.024 255)", "oklch(70% 0.018 255)"] },
+      "lime":          { "role": "primary",   "displayName": "Signal Lime",     "canonical": "oklch(88% 0.19 126)",   "tonalRamp": ["oklch(18% 0.06 126)", "oklch(28% 0.08 126)", "oklch(38% 0.10 126)", "oklch(48% 0.13 126)", "oklch(58% 0.15 126)", "oklch(68% 0.17 126)", "oklch(78% 0.18 126)", "oklch(88% 0.19 126)"] },
+      "blue":          { "role": "secondary", "displayName": "Informational Blue", "canonical": "oklch(68% 0.15 252)", "tonalRamp": ["oklch(18% 0.07 252)", "oklch(28% 0.09 252)", "oklch(36% 0.09 252)", "oklch(46% 0.12 252)", "oklch(56% 0.13 252)", "oklch(68% 0.15 252)", "oklch(78% 0.12 252)", "oklch(88% 0.07 252)"] },
+      "yellow":        { "role": "tertiary",  "displayName": "Caution Yellow",  "canonical": "oklch(82% 0.15 85)",   "tonalRamp": ["oklch(22% 0.07 85)", "oklch(32% 0.09 85)", "oklch(42% 0.11 85)", "oklch(52% 0.13 85)", "oklch(62% 0.14 85)", "oklch(72% 0.15 85)", "oklch(82% 0.15 85)", "oklch(92% 0.10 85)"] },
+      "orange":        { "role": "tertiary",  "displayName": "Risk Orange",     "canonical": "oklch(73% 0.18 52)",   "tonalRamp": ["oklch(20% 0.07 52)", "oklch(30% 0.09 52)", "oklch(40% 0.12 52)", "oklch(50% 0.14 52)", "oklch(60% 0.16 52)", "oklch(73% 0.18 52)", "oklch(83% 0.14 52)", "oklch(91% 0.08 52)"] },
+      "red":           { "role": "tertiary",  "displayName": "Error Red",       "canonical": "oklch(66% 0.21 28)",   "tonalRamp": ["oklch(20% 0.09 28)", "oklch(30% 0.11 28)", "oklch(40% 0.14 28)", "oklch(50% 0.17 28)", "oklch(60% 0.19 28)", "oklch(66% 0.21 28)", "oklch(78% 0.15 28)", "oklch(90% 0.08 28)"] },
+      "text-primary":  { "role": "neutral",   "displayName": "Text Primary",    "canonical": "oklch(94% 0.012 115)", "tonalRamp": ["oklch(17% 0.018 115)", "oklch(30% 0.018 115)", "oklch(45% 0.018 115)", "oklch(55% 0.018 115)", "oklch(63% 0.018 115)", "oklch(70% 0.018 115)", "oklch(80% 0.014 115)", "oklch(94% 0.012 115)"] }
+    },
+    "typographyMeta": {
+      "display": { "displayName": "Display",    "purpose": "Section titles on the marketing/landing surface. Never inside instrument panels." },
+      "headline": { "displayName": "Headline",   "purpose": "Panel titles, modal headers, result summaries." },
+      "body":     { "displayName": "Body",       "purpose": "Explanatory copy, capped at 68ch." },
+      "label":    { "displayName": "Label Mono", "purpose": "Instrument panel headers, metric card labels. Always uppercase." },
+      "mono":     { "displayName": "Value Mono", "purpose": "Numeric fiscal outputs, currency, CNAE codes." }
+    },
+    "shadows": [
+      { "name": "panel-shadow", "value": "0 26px 80px oklch(2% 0.01 255 / 0.34)", "purpose": "Top-level instrument panels and the simulator container. Applied sparingly." },
+      { "name": "lime-glow",    "value": "0 18px 54px oklch(88% 0.19 126 / 0.12)", "purpose": "Primary CTA hover state. Ambient lime bloom, not a hard shadow." },
+      { "name": "blue-glow",    "value": "0 18px 54px oklch(68% 0.15 252 / 0.12)", "purpose": "Informational panel accents. Rare." }
+    ],
+    "motion": [
+      { "name": "ease-out",    "value": "cubic-bezier(0.16, 1, 0.3, 1)",   "purpose": "Default easing for all state transitions. Expo out." },
+      { "name": "ease-in-out", "value": "cubic-bezier(0.77, 0, 0.175, 1)", "purpose": "Bidirectional transitions (expand/collapse)." },
+      { "name": "press-scale", "value": "0.975",                            "purpose": "Active/pressed state for buttons and interactive panels." }
+    ],
+    "breakpoints": [
+      { "name": "sm", "value": "640px" },
+      { "name": "md", "value": "768px" },
+      { "name": "lg", "value": "1024px" },
+      { "name": "xl", "value": "1200px" }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "Affirmative action. Used for simulate, generate, confirm. Lime is the signal color; use sparingly.",
+      "html": "<button class=\"ds-btn-primary\">Simular agora</button>",
+      "css": ".ds-btn-primary { display: inline-flex; align-items: center; justify-content: center; gap: 8px; background: oklch(88% 0.19 126); color: oklch(10% 0.018 130); font-family: 'Space Grotesk', sans-serif; font-size: 14px; font-weight: 850; border: none; border-radius: 7px; padding: 10px 20px; cursor: pointer; transition: box-shadow 180ms cubic-bezier(0.16, 1, 0.3, 1), transform 160ms cubic-bezier(0.16, 1, 0.3, 1); } .ds-btn-primary:hover { box-shadow: 0 18px 54px oklch(88% 0.19 126 / 0.12); } .ds-btn-primary:active { transform: scale(0.975); } .ds-btn-primary:focus-visible { outline: 2px solid oklch(88% 0.19 126); outline-offset: 2px; border-radius: 7px; }"
+    },
+    {
+      "name": "Secondary Button",
+      "kind": "button",
+      "refersTo": "button-secondary",
+      "description": "Secondary actions: cancel, back, export. Recedes behind the primary.",
+      "html": "<button class=\"ds-btn-secondary\">Ver detalhes</button>",
+      "css": ".ds-btn-secondary { display: inline-flex; align-items: center; justify-content: center; gap: 8px; background: oklch(12% 0.018 255); color: oklch(70% 0.018 255); font-family: 'Space Grotesk', sans-serif; font-size: 14px; font-weight: 600; border: 1px solid oklch(25% 0.022 255); border-radius: 7px; padding: 10px 20px; cursor: pointer; transition: border-color 160ms ease, color 160ms ease, background 160ms ease, transform 160ms cubic-bezier(0.16, 1, 0.3, 1); } .ds-btn-secondary:hover { border-color: oklch(45% 0.022 255); color: oklch(94% 0.012 115); background: oklch(17% 0.022 255); } .ds-btn-secondary:active { transform: scale(0.975); } .ds-btn-secondary:focus-visible { outline: 2px solid oklch(88% 0.19 126); outline-offset: 2px; }"
+    },
+    {
+      "name": "Instrument Panel",
+      "kind": "card",
+      "refersTo": "metric-card",
+      "description": "Top-level operational container. Frames the simulator, result panels, and dashboard sections.",
+      "html": "<div class=\"ds-instrument-panel\"><div class=\"ds-instrument-header\"><span class=\"ds-instrument-label\">Projeção anual</span></div><div class=\"ds-instrument-body\"><p style=\"color: oklch(94% 0.012 115); font-size: 16px;\">Conteúdo do painel</p></div></div>",
+      "css": ".ds-instrument-panel { background: linear-gradient(180deg, oklch(100% 0 0 / 0.025), transparent 42%), oklch(12% 0.018 255); border: 1px solid oklch(25% 0.022 255); border-radius: 8px; box-shadow: 0 26px 80px oklch(2% 0.01 255 / 0.34); overflow: hidden; } .ds-instrument-header { display: flex; justify-content: space-between; align-items: center; gap: 16px; padding: 13px 16px; border-bottom: 1px solid oklch(25% 0.022 255); background: oklch(100% 0 0 / 0.018); } .ds-instrument-label { color: oklch(63% 0.018 255); font-family: 'JetBrains Mono', monospace; font-size: 11px; font-weight: 850; letter-spacing: 0.04em; text-transform: uppercase; } .ds-instrument-body { padding: 16px; }"
+    },
+    {
+      "name": "Metric Card",
+      "kind": "card",
+      "refersTo": "metric-card",
+      "description": "Dense data cell inside instrument panels. Label above, value below.",
+      "html": "<div class=\"ds-metric-card\"><div class=\"ds-metric-label\">Faturamento acumulado</div><div class=\"ds-metric-value\">R$ 54.000</div></div>",
+      "css": ".ds-metric-card { background: oklch(17% 0.022 255); border: 1px solid oklch(25% 0.022 255); border-radius: 7px; padding: 16px; min-width: 0; } .ds-metric-label { color: oklch(63% 0.018 255); font-family: 'JetBrains Mono', monospace; font-size: 11px; font-weight: 850; text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 8px; } .ds-metric-value { color: oklch(94% 0.012 115); font-family: 'JetBrains Mono', monospace; font-size: 18px; font-weight: 850; line-height: 1.2; overflow-wrap: anywhere; }"
+    },
+    {
+      "name": "Text Input",
+      "kind": "input",
+      "refersTo": "input-text",
+      "description": "Text and number fields. Mono font for numeric inputs.",
+      "html": "<div class=\"ds-field\"><label class=\"ds-field-label\" for=\"ds-input-ex\">Faturamento mensal</label><input class=\"ds-input\" id=\"ds-input-ex\" type=\"text\" placeholder=\"R$ 0,00\" /></div>",
+      "css": ".ds-field { display: flex; flex-direction: column; gap: 6px; } .ds-field-label { color: oklch(70% 0.018 255); font-family: 'Space Grotesk', sans-serif; font-size: 13px; font-weight: 600; } .ds-input { background: oklch(17% 0.022 255); border: 1px solid oklch(33% 0.026 255); border-radius: 7px; color: oklch(94% 0.012 115); font-family: 'JetBrains Mono', monospace; font-size: 13px; font-weight: 700; padding: 10px 12px; transition: border-color 0.15s ease; width: 100%; } .ds-input::placeholder { color: oklch(51% 0.024 255); } .ds-input:hover { border-color: oklch(51% 0.024 255); } .ds-input:focus { border-color: oklch(88% 0.19 126); outline: none; } .ds-input:focus-visible { outline: 2px solid oklch(88% 0.19 126); outline-offset: 2px; }"
+    },
+    {
+      "name": "Evidence Pill",
+      "kind": "chip",
+      "refersTo": "metric-card",
+      "description": "Shows which inputs were used in a calculation. Lime dot signals confirmed input.",
+      "html": "<div class=\"ds-evidence-strip\"><span class=\"ds-evidence-pill\">CNAE 6201-5/01</span><span class=\"ds-evidence-pill\">Mês 4 de 12</span></div>",
+      "css": ".ds-evidence-strip { display: flex; flex-wrap: wrap; gap: 8px; } .ds-evidence-pill { display: inline-flex; align-items: center; gap: 6px; min-height: 30px; padding: 5px 9px; border: 1px solid oklch(25% 0.022 255); border-radius: 7px; background: oklch(17% 0.022 255); color: oklch(70% 0.018 255); font-family: 'Space Grotesk', sans-serif; font-size: 12px; font-weight: 750; } .ds-evidence-pill::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: oklch(88% 0.19 126); box-shadow: 0 0 0 3px oklch(88% 0.19 126 / 0.12); flex: 0 0 auto; }"
+    },
+    {
+      "name": "Toggle",
+      "kind": "input",
+      "refersTo": "input-text",
+      "description": "Binary switches for regime options and form mode changes.",
+      "html": "<label class=\"ds-toggle-wrap\"><span class=\"ds-toggle-label\">Incluir folha de pagamento</span><span class=\"ds-toggle\" id=\"ds-toggle-demo\"></span></label>",
+      "css": ".ds-toggle-wrap { display: flex; align-items: center; gap: 10px; cursor: pointer; user-select: none; } .ds-toggle-label { color: oklch(70% 0.018 255); font-family: 'Space Grotesk', sans-serif; font-size: 14px; } .ds-toggle { position: relative; width: 42px; height: 24px; background: oklch(22% 0.024 255); border-radius: 12px; transition: background 0.2s ease; flex-shrink: 0; } .ds-toggle.on { background: oklch(88% 0.19 126); } .ds-toggle::after { content: ''; position: absolute; top: 3px; left: 3px; width: 18px; height: 18px; background: oklch(8% 0.012 255); border-radius: 50%; transition: transform 0.2s ease; } .ds-toggle.on::after { transform: translateX(18px); }"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Fiscal Terminal",
+    "overview": "SimulaMEI is built like the tool a sharp accountant would use at their own desk: dense but never noisy, precise but never cold. The visual language borrows from instrument panels and operational dashboards, not from marketing sites or government portals. Every element is on the surface to earn its place; decoration is a tax the interface refuses to pay.\n\nThe default theme is dark because the primary user is a MEI consulting their numbers at night on a phone, or in a browser tab open between work tasks. The darkness is not aesthetic posturing; it reduces eye strain during real use and makes the high-contrast lime signals pop without screaming.\n\nThis system explicitly rejects the bureaucratic density of government fiscal portals, the upsell noise of online accounting services, and the inflated hero-metric template of generic SaaS dashboards.",
+    "keyCharacteristics": [
+      "Dark-mode-first with a subtle blue-tinted void as the base layer",
+      "Lime as the single signal accent: actionable, affirmative, scarce",
+      "Space Grotesk for structural copy; JetBrains Mono for values, labels, and codes",
+      "Instrument-panel framing: raised surfaces with header rules, not floating cards",
+      "Motion is responsive, not choreographed: state feedback only, expo-out easing"
+    ],
+    "rules": [
+      { "name": "The One Signal Rule",          "body": "Lime is used for one thing: affirmative action or confirmed status. It does not appear as decoration, dividers, or hover tints. When everything is lime, nothing is.", "section": "colors" },
+      { "name": "The Traffic Light Contract",   "body": "Lime = go / confirmed. Yellow = caution / approaching limit. Orange = risk / review needed. Red = error / blocked. This vocabulary is fixed across the entire product.", "section": "colors" },
+      { "name": "The Number-First Rule",        "body": "Fiscal values always appear in Value Mono before any prose explanation. A result page leads with the number; the context follows below, smaller.", "section": "typography" },
+      { "name": "The Uppercase Label Contract", "body": "All instrument panel headers and metric card labels are uppercase mono at 11px with 0.04em tracking. This is the only sanctioned use of uppercase text.", "section": "typography" },
+      { "name": "The Flat-by-Default Rule",     "body": "Metric cards, inputs, and secondary elements carry no shadow at rest. Shadow appears only in response to interaction or to frame a top-level structural panel.", "section": "elevation" }
+    ],
+    "dos": [
+      "Do show the fiscal result (value in mono) before any explanatory text.",
+      "Do use --lime exclusively for affirmative, actionable, or confirmed states.",
+      "Do use uppercase JetBrains Mono at 11px (letter-spacing 0.04em) for all instrument labels.",
+      "Do cap body explanatory text at 68ch line length.",
+      "Do use --yellow and --orange for fiscal alerts before reaching for --red.",
+      "Do name the source of every calculated value: CNAE used, year's table, assumed input.",
+      "Do apply --panel-shadow to top-level instrument panels only.",
+      "Do support prefers-reduced-motion.",
+      "Do include aria-current on active nav items and focus-visible outlines on all interactive elements."
+    ],
+    "donts": [
+      "Don't use portais governamentais as a visual reference: no dense form tables, no blue-gray headers.",
+      "Don't use the hero-metric template: big centered number with gradient accent and supporting stats.",
+      "Don't use online accounting service patterns: chat widgets, aggressive upsell banners.",
+      "Don't use border-left or border-right greater than 1px as a colored accent stripe.",
+      "Don't use gradient text (background-clip: text). Emphasis is through weight and size.",
+      "Don't nest instrument panels.",
+      "Don't use red for fiscal warnings — red is for form errors and blocked states only.",
+      "Don't use glassmorphism decoratively.",
+      "Don't use #000 or #fff anywhere in the system."
+    ]
+  }
+}

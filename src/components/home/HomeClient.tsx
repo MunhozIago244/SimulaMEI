@@ -1,6 +1,24 @@
 'use client'
 
 import { useState, useCallback, useEffect, useRef, useSyncExternalStore } from 'react'
+
+function useScrollReveal() {
+  useEffect(() => {
+    const els = document.querySelectorAll<HTMLElement>('[data-reveal]')
+    if (!els.length) return
+    const obs = new IntersectionObserver(
+      entries => entries.forEach(e => {
+        if (e.isIntersecting) {
+          e.target.classList.add('is-visible')
+          obs.unobserve(e.target)
+        }
+      }),
+      { threshold: 0.08, rootMargin: '0px 0px -48px 0px' }
+    )
+    els.forEach(el => obs.observe(el))
+    return () => obs.disconnect()
+  }, [])
+}
 import type { ResultadoSimulacao } from '@/types/tributario'
 import { Header } from '@/components/layout/Header'
 import { Footer } from '@/components/layout/Footer'
@@ -55,6 +73,7 @@ function saveTheme(theme: Theme) {
 }
 
 export function HomeClient({ initialResultado = null }: HomeClientProps) {
+  useScrollReveal()
   const theme = useSyncExternalStore(subscribeThemeChange, readStoredTheme, getServerThemeSnapshot)
   const [resultado, setResultado] = useState<ResultadoSimulacao | null>(initialResultado)
   const [isSharedResult, setIsSharedResult] = useState(Boolean(initialResultado))
@@ -102,6 +121,12 @@ export function HomeClient({ initialResultado = null }: HomeClientProps) {
 
   return (
     <div className="site-shell">
+      <a
+        href="#main-content"
+        className="sr-only focus:not-sr-only focus:fixed focus:left-3 focus:top-3 focus:z-[60] focus:rounded-md focus:bg-[var(--lime)] focus:px-4 focus:py-3 focus:font-black focus:text-[var(--ink-on-accent)]"
+      >
+        Pular para o conteúdo
+      </a>
       <Header theme={theme} onToggle={handleToggleTheme} />
       <SectionNav
         items={[
@@ -112,7 +137,7 @@ export function HomeClient({ initialResultado = null }: HomeClientProps) {
           { id: 'contadores', label: 'Contadores' },
         ]}
       />
-      <main>
+      <main id="main-content" tabIndex={-1}>
         <HeroSection />
         <SimulatorSection onResults={handleResults} />
 

@@ -15,6 +15,7 @@ export function MonoVal({ children, size = 28, color = 'var(--text1)' }: MonoVal
         fontSize: size,
         color,
         letterSpacing: '-0.02em',
+        transition: 'color 220ms var(--ease-out)',
       }}
     >
       {children}

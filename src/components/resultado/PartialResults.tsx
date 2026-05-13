@@ -20,14 +20,16 @@ const URGENCIA_CONFIG: Record<UrgenciaKey, {
   color: string
   bg: string
   border: string
+  iconBg: string
   label: string
   icon: string
   getMsg: (projecao: number, teto: number, excesso: number) => string
 }> = {
   critico: {
     color: 'var(--red)',
-    bg: 'rgba(255,59,59,0.07)',
-    border: 'rgba(255,59,59,0.2)',
+    bg: 'oklch(55% 0.22 25 / 0.07)',
+    border: 'oklch(55% 0.22 25 / 0.22)',
+    iconBg: 'oklch(55% 0.22 25 / 0.14)',
     label: 'CRÍTICO',
     icon: '✕',
     getMsg: (p, _t, exc) =>
@@ -35,17 +37,19 @@ const URGENCIA_CONFIG: Record<UrgenciaKey, {
   },
   risco: {
     color: 'var(--orange)',
-    bg: 'rgba(255,122,26,0.07)',
-    border: 'rgba(255,122,26,0.2)',
+    bg: 'oklch(73% 0.18 52 / 0.07)',
+    border: 'oklch(73% 0.18 52 / 0.22)',
+    iconBg: 'oklch(73% 0.18 52 / 0.14)',
     label: 'ATENÇÃO',
     icon: '▲',
     getMsg: () =>
-      `Dentro da margem de 20% — mas sem headroom. Qualquer receita extra compromete o regime.`,
+      `Dentro da margem de 20%, sem headroom. Qualquer receita extra compromete o regime.`,
   },
   atencao: {
     color: 'var(--yellow)',
-    bg: 'rgba(245,197,66,0.07)',
-    border: 'rgba(245,197,66,0.2)',
+    bg: 'oklch(82% 0.15 85 / 0.07)',
+    border: 'oklch(82% 0.15 85 / 0.22)',
+    iconBg: 'oklch(82% 0.15 85 / 0.14)',
     label: 'ALERTA',
     icon: '!',
     getMsg: (p, t) =>
@@ -53,8 +57,9 @@ const URGENCIA_CONFIG: Record<UrgenciaKey, {
   },
   ok: {
     color: 'var(--lime)',
-    bg: 'rgba(200,241,53,0.04)',
-    border: 'rgba(200,241,53,0.12)',
+    bg: 'oklch(88% 0.19 126 / 0.05)',
+    border: 'oklch(88% 0.19 126 / 0.14)',
+    iconBg: 'oklch(88% 0.19 126 / 0.12)',
     label: 'SAUDÁVEL',
     icon: '✓',
     getMsg: () =>
@@ -91,22 +96,20 @@ export function PartialResults({ resultado, onUnlock }: PartialResultsProps) {
     <section id="resultado" style={{ padding: '0 0 60px' }}>
       <div style={{ maxWidth: 1200, margin: '0 auto', padding: '0 40px' }}>
 
-        {/* Alert banner com accent line */}
+        {/* Alert banner */}
         <div
           className="fade-up alert-banner"
           style={{
             background: u.bg,
             border: `1px solid ${u.border}`,
+            borderTop: `2px solid ${u.color}`,
             borderRadius: 'var(--radius-lg)', padding: '20px 24px',
             marginBottom: 32, display: 'flex', gap: 16, alignItems: 'flex-start',
           }}
         >
-          {/* Accent line no topo */}
-          <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: 2, background: u.color }} />
-
           <div style={{
             width: 40, height: 40, borderRadius: 'var(--radius)',
-            background: u.color + '22', color: u.color,
+            background: u.iconBg, color: u.color,
             display: 'flex', alignItems: 'center', justifyContent: 'center',
             fontSize: 18, fontWeight: 800, flexShrink: 0,
           }}>
@@ -130,7 +133,7 @@ export function PartialResults({ resultado, onUnlock }: PartialResultsProps) {
         {/* 3 result cards */}
         <div
           style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 16, marginBottom: 32 }}
-          className="res-grid"
+          className="fade-up-2 res-grid"
         >
           <ResultCard
             label="Regime provável"
@@ -240,8 +243,8 @@ export function PartialResults({ resultado, onUnlock }: PartialResultsProps) {
             {fatorR.alertaProLabore && (
               <div style={{
                 marginTop: 18,
-                background: 'rgba(245,197,66,0.08)',
-                border: '1px solid rgba(245,197,66,0.24)',
+                background: 'oklch(82% 0.15 85 / 0.08)',
+                border: '1px solid oklch(82% 0.15 85 / 0.26)',
                 borderRadius: 'var(--radius)',
                 padding: '12px 14px',
                 color: 'var(--yellow)',
@@ -289,10 +292,12 @@ export function PartialResults({ resultado, onUnlock }: PartialResultsProps) {
         )}
 
         {/* Share button */}
-        <ShareResultButton resultado={resultado} />
+        <div className="fade-up-3">
+          <ShareResultButton resultado={resultado} />
+        </div>
 
         {/* Legal disclaimer */}
-        <div style={{
+        <div className="fade-up-3" style={{
           padding: '12px 16px',
           background: 'var(--bg2)', border: '1px solid var(--border)',
           borderRadius: 'var(--radius)', fontSize: 12, color: 'var(--text3)',
@@ -305,7 +310,9 @@ export function PartialResults({ resultado, onUnlock }: PartialResultsProps) {
         </div>
 
         {/* Email gate */}
-        <EmailGate onUnlock={onUnlock} resultado={resultado} />
+        <div className="fade-up-4">
+          <EmailGate onUnlock={onUnlock} resultado={resultado} />
+        </div>
       </div>
     </section>
   )

@@ -13,6 +13,7 @@ import { FiscalScore } from './FiscalScore'
 import { ExcessoVisual } from './ExcessoVisual'
 import { OportunidadesFiscais } from './OportunidadesFiscais'
 import { TabelaDAS } from './TabelaDAS'
+import { ShareResultButton } from './ShareResultButton'
 
 interface FullResultsProps {
   resultado: ResultadoSimulacao
@@ -98,7 +99,7 @@ export function FullResults({ resultado, email }: FullResultsProps) {
       <div style={{ maxWidth: 1200, margin: '0 auto', padding: '0 40px' }}>
 
         {/* Header */}
-        <div className="full-results-header" style={{ display: 'flex', alignItems: 'center', gap: 16, marginBottom: 48 }}>
+        <div className="fade-up full-results-header" style={{ display: 'flex', alignItems: 'center', gap: 16, marginBottom: 48 }}>
           <div>
             <div style={{ display: 'flex', gap: 8, marginBottom: 6 }}>
               <Badge color="var(--lime)">Análise completa</Badge>
@@ -142,10 +143,14 @@ export function FullResults({ resultado, email }: FullResultsProps) {
           </div>
         </div>
 
-        <OportunidadesFiscais oportunidades={oportunidades} />
+        <ShareResultButton resultado={resultado} variant="full" />
+
+        <div className="fade-up-2">
+          <OportunidadesFiscais oportunidades={oportunidades} />
+        </div>
 
         {/* Comparativo de regimes - bars */}
-        <div style={{
+        <div className="fade-up-3" style={{
           background: 'var(--bg1)', border: '1px solid var(--border)',
           borderRadius: 'var(--radius-lg)', padding: '32px 36px', marginBottom: 28,
         }}>
@@ -184,7 +189,7 @@ export function FullResults({ resultado, email }: FullResultsProps) {
                   </div>
                   <div className="regime-bar" style={{
                     height: Math.max(pct * 1.8, 16),
-                    background: isActive ? regime.color : regime.color + '55',
+                    background: isActive ? regime.color : `color-mix(in oklch, ${regime.color} 38%, transparent)`,
                     display: 'flex', alignItems: 'flex-start', justifyContent: 'center',
                     paddingTop: 8,
                     boxShadow: isMelhor ? `0 0 24px ${regime.color}55, 0 0 8px ${regime.color}30` : 'none',
