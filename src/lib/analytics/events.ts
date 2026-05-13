@@ -10,6 +10,7 @@ export type ProductEventName =
   | 'pdf_cta_clicked'
   | 'report_purchased'
   | 'monitor_waitlist_joined'
+  | 'pro_upgrade_from_relatorio'
   | 'accountant_demo_requested'
   | 'accountant_signup_interest'
   | 'accountant_checkout_started'
