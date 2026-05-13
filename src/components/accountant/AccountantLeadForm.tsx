@@ -106,8 +106,8 @@ export function AccountantLeadForm({ source = 'para-contadores' }: { source?: st
   if (state === 'sent') {
     return (
       <div style={{
-        border: '1px solid rgba(200,241,53,0.26)',
-        background: 'rgba(200,241,53,0.08)',
+        border: '1px solid var(--tint-lime-border)',
+        background: 'var(--tint-lime)',
         borderRadius: 'var(--radius-lg)',
         padding: 24,
       }}>
@@ -128,8 +128,8 @@ export function AccountantLeadForm({ source = 'para-contadores' }: { source?: st
         <div style={{
           display: 'flex', alignItems: 'center', gap: 8,
           padding: '10px 12px',
-          background: 'rgba(255,140,0,0.08)',
-          border: '1px solid rgba(255,140,0,0.2)',
+          background: 'var(--tint-orange)',
+          border: '1px solid var(--tint-orange-strong)',
           borderRadius: 'var(--radius)',
           fontSize: 12, color: 'var(--orange)',
         }}>

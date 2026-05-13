@@ -11,10 +11,10 @@ interface MonitorInsightsProps {
 const MONTH_LABELS = ['jan', 'fev', 'mar', 'abr', 'mai', 'jun', 'jul', 'ago', 'set', 'out', 'nov', 'dez']
 
 const TONE_STYLES = {
-  info: { color: 'var(--blue)', bg: 'rgba(96,165,250,0.08)', border: 'rgba(96,165,250,0.24)' },
-  warn: { color: 'var(--yellow)', bg: 'rgba(245,197,66,0.08)', border: 'rgba(245,197,66,0.24)' },
-  critical: { color: 'var(--red)', bg: 'rgba(255,59,59,0.08)', border: 'rgba(255,59,59,0.24)' },
-  opportunity: { color: 'var(--lime)', bg: 'rgba(200,241,53,0.08)', border: 'rgba(200,241,53,0.24)' },
+  info: { color: 'var(--blue)', bg: 'var(--tint-blue)', border: 'var(--tint-blue-border)' },
+  warn: { color: 'var(--yellow)', bg: 'var(--tint-yellow)', border: 'var(--tint-yellow-border)' },
+  critical: { color: 'var(--red)', bg: 'var(--tint-red)', border: 'var(--tint-red-border)' },
+  opportunity: { color: 'var(--lime)', bg: 'var(--tint-lime)', border: 'var(--tint-lime-border)' },
 }
 
 /**
@@ -42,7 +42,7 @@ export function MonitorInsights({ history, tipoMei = 'geral' }: MonitorInsightsP
           <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
             <div style={{
               width: 36, height: 36, borderRadius: 8,
-              background: 'rgba(96,165,250,0.1)', border: '1px solid rgba(96,165,250,0.2)',
+              background: 'var(--tint-blue)', border: '1px solid var(--tint-blue-strong)',
               display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
             }}>
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--blue)" strokeWidth="2">

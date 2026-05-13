@@ -125,12 +125,12 @@ export default async function AccountantBillingPage() {
                     ? 'linear-gradient(135deg, var(--bg1) 0%, rgba(245,197,66,0.04) 100%)'
                     : 'linear-gradient(135deg, var(--bg1) 0%, rgba(200,241,53,0.04) 100%)',
               borderColor: trialExpired
-                ? 'rgba(255,59,59,0.24)'
+                ? 'var(--tint-red-border)'
                 : trialDays !== null && trialDays <= 3
-                  ? 'rgba(255,59,59,0.24)'
+                  ? 'var(--tint-red-border)'
                   : trialDays !== null && trialDays <= 14
-                    ? 'rgba(245,197,66,0.24)'
-                    : 'rgba(200,241,53,0.24)',
+                    ? 'var(--tint-yellow-border)'
+                    : 'var(--tint-lime-border)',
             }}
           >
             <div style={{ display: 'flex', gap: 20, alignItems: 'center', flexWrap: 'wrap' }}>
@@ -138,7 +138,7 @@ export default async function AccountantBillingPage() {
               {trialExpired ? (
                 <div style={{
                   width: 80, height: 80, borderRadius: 16,
-                  background: 'rgba(255,59,59,0.1)', border: '1px solid rgba(255,59,59,0.24)',
+                  background: 'var(--tint-red)', border: '1px solid var(--tint-red-border)',
                   display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
                 }}>
                   <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="var(--red)" strokeWidth="2">
@@ -152,15 +152,15 @@ export default async function AccountantBillingPage() {
                   display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
                   width: 80, height: 80, borderRadius: 16,
                   background: trialDays !== null && trialDays <= 3
-                    ? 'rgba(255,59,59,0.1)'
+                    ? 'var(--tint-red)'
                     : trialDays !== null && trialDays <= 14
-                      ? 'rgba(245,197,66,0.1)'
-                      : 'rgba(200,241,53,0.1)',
+                      ? 'var(--tint-yellow)'
+                      : 'var(--tint-lime)',
                   border: `1px solid ${trialDays !== null && trialDays <= 3
-                    ? 'rgba(255,59,59,0.24)'
+                    ? 'var(--tint-red-border)'
                     : trialDays !== null && trialDays <= 14
-                      ? 'rgba(245,197,66,0.24)'
-                      : 'rgba(200,241,53,0.24)'}`,
+                      ? 'var(--tint-yellow-border)'
+                      : 'var(--tint-lime-border)'}`,
                   flexShrink: 0,
                 }}>
                   <div style={{
@@ -249,9 +249,9 @@ export default async function AccountantBillingPage() {
               <span style={{
                 fontSize: 11, fontWeight: 800,
                 padding: '4px 10px', borderRadius: 999,
-                background: billingState.severity === 'ok' ? 'rgba(200,241,53,0.1)' : billingState.severity === 'warn' ? 'rgba(245,197,66,0.1)' : 'rgba(255,59,59,0.1)',
+                background: billingState.severity === 'ok' ? 'var(--tint-lime)' : billingState.severity === 'warn' ? 'var(--tint-yellow)' : 'var(--tint-red)',
                 color: billingState.severity === 'ok' ? 'var(--lime)' : billingState.severity === 'warn' ? 'var(--yellow)' : 'var(--red)',
-                border: `1px solid ${billingState.severity === 'ok' ? 'rgba(200,241,53,0.24)' : billingState.severity === 'warn' ? 'rgba(245,197,66,0.24)' : 'rgba(255,59,59,0.24)'}`,
+                border: `1px solid ${billingState.severity === 'ok' ? 'var(--tint-lime-border)' : billingState.severity === 'warn' ? 'var(--tint-yellow-border)' : 'var(--tint-red-border)'}`,
               }}>
                 {billingState.statusLabel}
               </span>
@@ -310,7 +310,7 @@ export default async function AccountantBillingPage() {
             <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 12 }}>
               <div style={{
                 width: 36, height: 36, borderRadius: 8,
-                background: 'rgba(96,165,250,0.1)', border: '1px solid rgba(96,165,250,0.2)',
+                background: 'var(--tint-blue)', border: '1px solid var(--tint-blue-strong)',
                 display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
               }}>
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--blue)" strokeWidth="2">
@@ -399,8 +399,8 @@ export default async function AccountantBillingPage() {
                         <span style={{
                           fontSize: 10, fontWeight: 800, textTransform: 'uppercase',
                           padding: '2px 8px', borderRadius: 4,
-                          background: 'rgba(200,241,53,0.12)', color: 'var(--lime)',
-                          border: '1px solid rgba(200,241,53,0.24)',
+                          background: 'var(--tint-lime)', color: 'var(--lime)',
+                          border: '1px solid var(--tint-lime-border)',
                         }}>
                           Atual
                         </span>
@@ -434,8 +434,8 @@ export default async function AccountantBillingPage() {
                   {isCurrent ? (
                     <div style={{
                       padding: '10px 14px',
-                      background: 'rgba(200,241,53,0.08)',
-                      border: '1px solid rgba(200,241,53,0.2)',
+                      background: 'var(--tint-lime)',
+                      border: '1px solid var(--tint-lime-strong)',
                       borderRadius: 'var(--radius)',
                       color: 'var(--lime)',
                       fontSize: 12, fontWeight: 800, textAlign: 'center',
@@ -474,8 +474,8 @@ export default async function AccountantBillingPage() {
                     <span style={{
                       fontSize: 10, fontWeight: 800, textTransform: 'uppercase',
                       padding: '2px 8px', borderRadius: 4,
-                      background: 'rgba(200,241,53,0.12)', color: 'var(--lime)',
-                      border: '1px solid rgba(200,241,53,0.24)',
+                      background: 'var(--tint-lime)', color: 'var(--lime)',
+                      border: '1px solid var(--tint-lime-border)',
                     }}>
                       Atual
                     </span>

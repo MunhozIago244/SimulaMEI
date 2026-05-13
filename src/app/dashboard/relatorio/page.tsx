@@ -71,8 +71,8 @@ export default async function DashboardRelatorioPage() {
           <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 18 }}>
             <div style={{
               width: 40, height: 40, borderRadius: 10,
-              background: 'rgba(200,241,53,0.1)',
-              border: '1px solid rgba(200,241,53,0.2)',
+              background: 'var(--tint-lime)',
+              border: '1px solid var(--tint-lime-strong)',
               display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
             }}>
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--lime)" strokeWidth="2">
@@ -98,7 +98,7 @@ export default async function DashboardRelatorioPage() {
               <li key={i} style={{ display: 'flex', gap: 12, fontSize: 14, color: 'var(--text2)', lineHeight: 1.5 }}>
                 <span style={{
                   width: 22, height: 22, borderRadius: 6,
-                  background: 'rgba(200,241,53,0.12)',
+                  background: 'var(--tint-lime)',
                   display: 'inline-flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
                 }}>
                   <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--lime)" strokeWidth="3">
@@ -191,8 +191,8 @@ export default async function DashboardRelatorioPage() {
             padding: '20px 26px 26px',
             display: 'flex',
             flexDirection: 'column',
-            background: 'linear-gradient(135deg, var(--bg1) 0%, rgba(200,241,53,0.06) 100%)',
-            borderColor: 'rgba(200,241,53,0.3)',
+            background: 'linear-gradient(135deg, var(--bg1) 0%, var(--tint-lime) 100%)',
+            borderColor: 'var(--tint-lime-border)',
             borderWidth: 2,
           }}>
             {/* Header com pill recomendação inline (não mais absolute pra evitar sobreposição) */}
@@ -213,9 +213,9 @@ export default async function DashboardRelatorioPage() {
                 fontSize: 10, fontWeight: 800,
                 padding: '3px 9px',
                 borderRadius: 999,
-                background: 'rgba(200,241,53,0.12)',
+                background: 'var(--tint-lime)',
                 color: 'var(--lime)',
-                border: '1px solid rgba(200,241,53,0.24)',
+                border: '1px solid var(--tint-lime-border)',
               }}>
                 Ilimitado · {Math.round(((REPORT_PRICE - PRO_PRICE) / REPORT_PRICE) * 100)}% mais barato/mês
               </span>
@@ -279,8 +279,8 @@ function ValueComparisonCard({ reportPrice, proPrice }: { reportPrice: number; p
     <div style={{
       padding: '12px 14px',
       borderRadius: 'var(--radius)',
-      background: 'rgba(200,241,53,0.06)',
-      border: '1px solid rgba(200,241,53,0.16)',
+      background: 'var(--tint-lime)',
+      border: '1px solid var(--tint-lime-strong)',
       marginTop: 4,
     }}>
       <div style={{ fontSize: 10, fontWeight: 800, color: 'var(--lime)', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: 10 }}>
@@ -301,7 +301,7 @@ function ValueComparisonCard({ reportPrice, proPrice }: { reportPrice: number; p
         <div style={{
           textAlign: 'left',
           padding: '0 0 0 12px',
-          borderLeft: '1px solid rgba(200,241,53,0.16)',
+          borderLeft: '1px solid var(--tint-lime-strong)',
         }}>
           <div style={{ fontSize: 10, color: 'var(--lime)', marginBottom: 4, fontWeight: 700 }}>Pro</div>
           <div style={{ fontFamily: 'var(--mono)', fontSize: 16, fontWeight: 900, color: 'var(--lime)' }}>
@@ -314,7 +314,7 @@ function ValueComparisonCard({ reportPrice, proPrice }: { reportPrice: number; p
       </div>
       <div style={{
         marginTop: 10, paddingTop: 10,
-        borderTop: '1px dashed rgba(200,241,53,0.16)',
+        borderTop: '1px dashed var(--tint-lime-strong)',
         fontSize: 11, color: 'var(--text2)', lineHeight: 1.45,
       }}>
         Pague <strong style={{ color: 'var(--lime)' }}>R$ {reportPrice - proPrice} a menos</strong> por mês e
@@ -331,12 +331,12 @@ function ProUpsellCompact({ totalReportsPaid, moneySpent, monthsEquivalent }: { 
       padding: 22,
       marginTop: 16,
       background: 'linear-gradient(135deg, var(--bg1) 0%, rgba(200,241,53,0.04) 100%)',
-      borderColor: 'rgba(200,241,53,0.2)',
+      borderColor: 'var(--tint-lime-strong)',
     }}>
       <div style={{ display: 'flex', gap: 20, alignItems: 'center', flexWrap: 'wrap' }}>
         <div style={{
           width: 44, height: 44, borderRadius: 10,
-          background: 'rgba(200,241,53,0.12)', border: '1px solid rgba(200,241,53,0.24)',
+          background: 'var(--tint-lime)', border: '1px solid var(--tint-lime-border)',
           display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
         }}>
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--lime)" strokeWidth="2">

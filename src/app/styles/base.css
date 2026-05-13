@@ -118,13 +118,12 @@ textarea:focus-visible {
 }
 
 /* ── Custom cursor (inspiração aerukart.com) ────────────────── */
-/* Esconde o cursor nativo quando o custom está ativo. Usa @media pra
-   aplicar só em dispositivos com pointer fino (mouse), evitando touch. */
-@media (pointer: fine) and (prefers-reduced-motion: no-preference) {
-  html, body { cursor: none; }
-  a, button, input, select, textarea, [role="button"], [data-cursor="hover"] {
-    cursor: none;
-  }
+/* Esconde o cursor nativo APENAS quando o JS do CustomCursor confirma
+   que está rodando (via body[data-cursor-active="true"]). Isso evita o
+   bug "cursor sumiu e custom não apareceu" se o componente falhar. */
+body[data-cursor-active="true"],
+body[data-cursor-active="true"] * {
+  cursor: none !important;
 }
 
 .cc-dot {

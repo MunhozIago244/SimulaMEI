@@ -26,8 +26,8 @@ function TrialBadge({ trialEndsAt }: { trialEndsAt: string | null }) {
   if (days === null) return null
 
   const color = days <= 3 ? 'var(--red)' : days <= 14 ? 'var(--yellow)' : 'var(--lime)'
-  const bg = days <= 3 ? 'rgba(255,59,59,0.1)' : days <= 14 ? 'rgba(245,197,66,0.1)' : 'rgba(200,241,53,0.1)'
-  const border = days <= 3 ? 'rgba(255,59,59,0.28)' : days <= 14 ? 'rgba(245,197,66,0.28)' : 'rgba(200,241,53,0.28)'
+  const bg = days <= 3 ? 'var(--tint-red)' : days <= 14 ? 'var(--tint-yellow)' : 'var(--tint-lime)'
+  const border = days <= 3 ? 'var(--tint-red-border)' : days <= 14 ? 'var(--tint-yellow-border)' : 'var(--tint-lime-border)'
   const isUrgent = days <= 3
 
   return (
@@ -112,14 +112,14 @@ function PlanBadge({ plan }: { plan: string }) {
   const isPro = planNormalized.includes('pro')
   const color = isEnterprise ? 'var(--lime)' : isPro ? 'var(--blue)' : 'var(--text3)'
   const bg = isEnterprise
-    ? 'rgba(200,241,53,0.1)'
+    ? 'var(--tint-lime)'
     : isPro
-      ? 'rgba(96,165,250,0.1)'
+      ? 'var(--tint-blue)'
       : 'var(--bg2)'
   const border = isEnterprise
-    ? 'rgba(200,241,53,0.2)'
+    ? 'var(--tint-lime-strong)'
     : isPro
-      ? 'rgba(96,165,250,0.2)'
+      ? 'var(--tint-blue-strong)'
       : 'var(--border)'
 
   return (
@@ -254,14 +254,14 @@ export function AccountantShell({ office, active, children }: AccountantShellPro
           <div style={{
             display: 'flex', alignItems: 'center', gap: 14,
             padding: '14px 18px',
-            background: 'linear-gradient(90deg, rgba(255,59,59,0.08), rgba(255,59,59,0.02))',
-            border: '1px solid rgba(255,59,59,0.24)',
+            background: 'linear-gradient(90deg, var(--tint-red), rgba(255,59,59,0.02))',
+            border: '1px solid var(--tint-red-border)',
             borderRadius: 'var(--radius-lg)',
             marginBottom: 18,
           }}>
             <div style={{
               width: 36, height: 36, borderRadius: 8,
-              background: 'rgba(255,59,59,0.16)',
+              background: 'var(--tint-red-strong)',
               display: 'flex', alignItems: 'center', justifyContent: 'center',
               flexShrink: 0,
             }}>
@@ -293,8 +293,8 @@ export function AccountantShell({ office, active, children }: AccountantShellPro
           <div
             role="alert"
             style={{
-              border: '1px solid rgba(245,197,66,0.24)',
-              background: 'rgba(245,197,66,0.06)',
+              border: '1px solid var(--tint-yellow-border)',
+              background: 'var(--tint-yellow)',
               color: 'var(--yellow)',
               borderRadius: 'var(--radius)',
               padding: '14px 16px',

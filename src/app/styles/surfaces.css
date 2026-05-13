@@ -158,7 +158,7 @@
 }
 .db-nav-item[data-active="true"],
 .db-nav-item[aria-current="page"] {
-  background: rgba(200, 241, 53, 0.12);
+  background: var(--tint-lime-strong);
   color: var(--lime);
 }
 .db-nav-item:hover {
