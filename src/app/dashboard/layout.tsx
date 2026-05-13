@@ -13,11 +13,12 @@ import { getDashboardContext } from '@/lib/dashboard/context'
  */
 export default async function DashboardLayout({ children }: { children: React.ReactNode }) {
   // Side-effect: força auth check + redirect se necessário (early-exit)
-  await getDashboardContext()
+  // + nos diz se o usuário é admin (controla a visibilidade do item "Painel Contador")
+  const ctx = await getDashboardContext()
 
   return (
     <div style={{ display: 'flex', minHeight: '100vh', background: 'var(--bg0)', color: 'var(--text1)' }}>
-      <DashboardSidebar />
+      <DashboardSidebar isAdmin={ctx.hasFullAdminAccess} />
       <main style={{ flex: 1, minWidth: 0, padding: '32px 32px 56px', overflowX: 'hidden' }}>
         <div style={{ maxWidth: 1200, margin: '0 auto' }}>
           {children}

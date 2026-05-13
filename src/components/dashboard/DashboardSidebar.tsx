@@ -10,6 +10,8 @@ interface NavItem {
   /** Pathname exato pra marcar como ativo. null = nunca ativo (link externo ao dashboard). */
   match: string | null
   icon: React.ReactNode
+  /** True se o item só deve aparecer para administradores */
+  adminOnly?: boolean
 }
 
 const NAV_ITEMS: NavItem[] = [
@@ -33,10 +35,20 @@ const NAV_ITEMS: NavItem[] = [
     href: '/aprenda', label: 'Aprenda', match: null,
     icon: <><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></>,
   },
+  {
+    href: '/contador', label: 'Painel Contador', match: '/contador', adminOnly: true,
+    icon: <><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></>,
+  },
 ]
 
-export function DashboardSidebar() {
+interface DashboardSidebarProps {
+  /** Se true, mostra itens marcados como adminOnly */
+  isAdmin?: boolean
+}
+
+export function DashboardSidebar({ isAdmin = false }: DashboardSidebarProps) {
   const pathname = usePathname()
+  const visibleItems = NAV_ITEMS.filter(item => !item.adminOnly || isAdmin)
 
   return (
     <aside aria-label="Navegação do dashboard" className="db-sidebar">
@@ -55,8 +67,12 @@ export function DashboardSidebar() {
 
         {/* Nav items */}
         <nav className="db-sidebar-nav">
-          {NAV_ITEMS.map(item => {
-            const isActive = item.match !== null && pathname === item.match
+          {visibleItems.map(item => {
+            // Active também se pathname começa com /contador (sub-rotas tipo /contador/clientes)
+            const isActive = item.match !== null && (
+              pathname === item.match ||
+              (item.match === '/contador' && pathname?.startsWith('/contador'))
+            )
             return (
               <Link
                 key={item.href}
