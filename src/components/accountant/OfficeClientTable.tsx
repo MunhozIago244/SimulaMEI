@@ -6,9 +6,9 @@ interface OfficeClientTableProps {
 }
 
 function getStatus(client: OfficeClientRecord) {
-  if (client.ativo) return { label: 'Ativo', color: 'var(--lime)', bg: 'rgba(200,241,53,0.1)', border: 'rgba(200,241,53,0.24)' }
-  if (client.inactive_reason === 'plan_limit') return { label: 'Pausado por plano', color: 'var(--orange)', bg: 'rgba(255,140,0,0.1)', border: 'rgba(255,140,0,0.24)' }
-  return { label: 'Pausado', color: 'var(--yellow)', bg: 'rgba(245,197,66,0.1)', border: 'rgba(245,197,66,0.24)' }
+  if (client.ativo) return { label: 'Ativo', color: 'var(--lime)', bg: 'var(--tint-lime)', border: 'var(--tint-lime-border)' }
+  if (client.inactive_reason === 'plan_limit') return { label: 'Pausado por plano', color: 'var(--orange)', bg: 'var(--tint-orange)', border: 'var(--tint-orange-border)' }
+  return { label: 'Pausado', color: 'var(--yellow)', bg: 'var(--tint-yellow)', border: 'var(--tint-yellow-border)' }
 }
 
 /** Pega iniciais do nome (até 2 caracteres) */
@@ -36,7 +36,7 @@ export function OfficeClientTable({ clients }: OfficeClientTableProps) {
       <div className="acc-card" style={{ padding: '32px 24px', textAlign: 'center' }}>
         <div style={{
           width: 56, height: 56, borderRadius: 14,
-          background: 'rgba(96,165,250,0.1)', border: '1px solid rgba(96,165,250,0.2)',
+          background: 'var(--tint-blue)', border: '1px solid var(--tint-blue-strong)',
           display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
           marginBottom: 16,
         }}>

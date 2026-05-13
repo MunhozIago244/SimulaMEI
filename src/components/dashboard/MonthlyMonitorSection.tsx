@@ -168,8 +168,8 @@ export function MonthlyMonitorSection({
           <div style={{
             padding: '10px 14px',
             borderRadius: 'var(--radius)',
-            border: '1px solid rgba(245,197,66,0.24)',
-            background: 'rgba(245,197,66,0.08)',
+            border: '1px solid var(--tint-yellow-border)',
+            background: 'var(--tint-yellow)',
             color: 'var(--yellow)', fontSize: 13,
           }}>
             Schema de <code>monthly_inputs</code> ainda não está aplicado no Supabase.
@@ -181,8 +181,8 @@ export function MonthlyMonitorSection({
             display: 'flex', alignItems: 'center', justifyContent: 'space-between',
             padding: '10px 14px',
             borderRadius: 'var(--radius)',
-            border: '1px solid rgba(96,165,250,0.24)',
-            background: 'rgba(96,165,250,0.06)',
+            border: '1px solid var(--tint-blue-border)',
+            background: 'var(--tint-blue)',
             color: 'var(--blue)', fontSize: 12, fontWeight: 600,
           }}>
             <span style={{ display: 'inline-flex', alignItems: 'center', gap: 8 }}>
@@ -305,11 +305,11 @@ export function MonthlyMonitorSection({
           <div style={{
             padding: '14px 16px',
             borderRadius: 'var(--radius)',
-            border: '1px solid rgba(200,241,53,0.24)',
-            background: 'rgba(200,241,53,0.06)',
+            border: '1px solid var(--tint-lime-border)',
+            background: 'var(--tint-lime)',
             display: 'flex', gap: 12, alignItems: 'flex-start',
           }}>
-            <div style={{ width: 28, height: 28, borderRadius: 6, background: 'rgba(200,241,53,0.16)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+            <div style={{ width: 28, height: 28, borderRadius: 6, background: 'var(--tint-lime-strong)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--lime)" strokeWidth="2.5">
                 <path d="M22 4L12 14.01l-3-3"/>
               </svg>
@@ -386,7 +386,7 @@ export function MonthlyMonitorSection({
                       fontSize: 11, fontWeight: 800,
                       color: row.anexoCalculado === 'III' ? 'var(--lime)' : row.anexoCalculado === 'V' ? 'var(--orange)' : 'var(--text3)',
                       padding: '3px 8px', borderRadius: 4,
-                      background: row.anexoCalculado === 'III' ? 'rgba(200,241,53,0.1)' : row.anexoCalculado === 'V' ? 'rgba(255,140,0,0.1)' : 'var(--bg2)',
+                      background: row.anexoCalculado === 'III' ? 'var(--tint-lime)' : row.anexoCalculado === 'V' ? 'var(--tint-orange)' : 'var(--bg2)',
                       whiteSpace: 'nowrap',
                     }}>
                       {row.anexoCalculado ? `Anexo ${row.anexoCalculado}` : '—'}
@@ -400,7 +400,7 @@ export function MonthlyMonitorSection({
                         className="pressable"
                         style={{
                           width: 30, height: 30, borderRadius: 6,
-                          background: isCurrentlyEditing ? 'rgba(96,165,250,0.16)' : 'transparent',
+                          background: isCurrentlyEditing ? 'var(--tint-blue-strong)' : 'transparent',
                           border: '1px solid var(--border)',
                           color: isCurrentlyEditing ? 'var(--blue)' : 'var(--text3)',
                           cursor: 'pointer',

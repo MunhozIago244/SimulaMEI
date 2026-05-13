@@ -7,9 +7,9 @@ interface OfficeAlertsPanelProps {
 }
 
 const SEVERITY_MAP = {
-  info: { color: 'var(--blue)', bg: 'rgba(96,165,250,0.08)', tag: 'info' as const, label: 'Info' },
-  warn: { color: 'var(--yellow)', bg: 'rgba(245,197,66,0.08)', tag: 'warn' as const, label: 'Atenção' },
-  danger: { color: 'var(--red)', bg: 'rgba(255,59,59,0.08)', tag: 'danger' as const, label: 'Crítico' },
+  info: { color: 'var(--blue)', bg: 'var(--tint-blue)', tag: 'info' as const, label: 'Info' },
+  warn: { color: 'var(--yellow)', bg: 'var(--tint-yellow)', tag: 'warn' as const, label: 'Atenção' },
+  danger: { color: 'var(--red)', bg: 'var(--tint-red)', tag: 'danger' as const, label: 'Crítico' },
 }
 
 function formatDate(value: string | null) {
@@ -93,8 +93,8 @@ export function OfficeAlertsPanel({ openAlerts, resolvedAlerts }: OfficeAlertsPa
           display: 'inline-flex', alignItems: 'center', gap: 6,
           padding: '5px 10px',
           borderRadius: 999,
-          background: openAlerts.length > 0 ? 'rgba(255,59,59,0.08)' : 'var(--bg2)',
-          border: openAlerts.length > 0 ? '1px solid rgba(255,59,59,0.24)' : '1px solid var(--border)',
+          background: openAlerts.length > 0 ? 'var(--tint-red)' : 'var(--bg2)',
+          border: openAlerts.length > 0 ? '1px solid var(--tint-red-border)' : '1px solid var(--border)',
           color: openAlerts.length > 0 ? 'var(--red)' : 'var(--text3)',
           fontSize: 11, fontWeight: 800,
         }}>
@@ -161,7 +161,7 @@ export function OfficeAlertsPanel({ openAlerts, resolvedAlerts }: OfficeAlertsPa
         <div className="acc-card" style={{ padding: 24, textAlign: 'center' }}>
           <div style={{
             width: 48, height: 48, borderRadius: 12,
-            background: 'rgba(200,241,53,0.1)', border: '1px solid rgba(200,241,53,0.2)',
+            background: 'var(--tint-lime)', border: '1px solid var(--tint-lime-strong)',
             display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
             marginBottom: 12,
           }}>

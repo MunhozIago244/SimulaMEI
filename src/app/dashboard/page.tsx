@@ -467,7 +467,7 @@ export default async function DashboardPage() {
                   <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
                     <div style={{
                       width: 36, height: 36, borderRadius: 8,
-                      background: 'rgba(200,241,53,0.1)', border: '1px solid rgba(200,241,53,0.2)',
+                      background: 'var(--tint-lime)', border: '1px solid var(--tint-lime-strong)',
                       display: 'flex', alignItems: 'center', justifyContent: 'center',
                     }}>
                       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--lime)" strokeWidth="2">
@@ -668,7 +668,7 @@ export default async function DashboardPage() {
                 {oportunidades.length > 0 ? oportunidades.slice(0, 3).map(item => (
                   <article key={item.id} style={{ background: 'var(--bg2)', border: '1px solid var(--border)', borderRadius: 'var(--radius)', padding: '14px 16px' }}>
                     <div style={{ display: 'flex', gap: 6, marginBottom: 8 }}>
-                      <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4, fontSize: 10, fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.06em', color: item.prioridade === 'alta' ? 'var(--lime)' : 'var(--yellow)', background: item.prioridade === 'alta' ? 'rgba(200,241,53,0.1)' : 'rgba(245,197,66,0.1)', padding: '3px 7px', borderRadius: 4 }}>
+                      <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4, fontSize: 10, fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.06em', color: item.prioridade === 'alta' ? 'var(--lime)' : 'var(--yellow)', background: item.prioridade === 'alta' ? 'var(--tint-lime)' : 'var(--tint-yellow)', padding: '3px 7px', borderRadius: 4 }}>
                         {item.prioridade === 'alta' ? '▲' : '→'} {item.prioridade}
                       </span>
                       <span style={{ fontSize: 10, color: 'var(--text3)', background: 'var(--bg3)', padding: '3px 7px', borderRadius: 4, fontWeight: 600 }}>{item.confianca}</span>
@@ -700,10 +700,10 @@ export default async function DashboardPage() {
                 {calendarItems.map((item, i, arr) => {
                   // Cor base da severidade
                   const severityColors = {
-                    critico: { fg: 'var(--red)', bg: 'rgba(255,59,59,0.08)', border: 'rgba(255,59,59,0.2)' },
-                    atencao: { fg: 'var(--yellow)', bg: 'rgba(245,197,66,0.08)', border: 'rgba(245,197,66,0.2)' },
-                    ok: { fg: 'var(--lime)', bg: 'rgba(200,241,53,0.08)', border: 'rgba(200,241,53,0.2)' },
-                    info: { fg: 'var(--blue)', bg: 'rgba(96,165,250,0.08)', border: 'rgba(96,165,250,0.2)' },
+                    critico: { fg: 'var(--red)', bg: 'var(--tint-red)', border: 'var(--tint-red-strong)' },
+                    atencao: { fg: 'var(--yellow)', bg: 'var(--tint-yellow)', border: 'var(--tint-yellow-strong)' },
+                    ok: { fg: 'var(--lime)', bg: 'var(--tint-lime)', border: 'var(--tint-lime-strong)' },
+                    info: { fg: 'var(--blue)', bg: 'var(--tint-blue)', border: 'var(--tint-blue-strong)' },
                   } as const
                   const sev = severityColors[item.severity ?? 'info']
                   return (
@@ -766,11 +766,11 @@ export default async function DashboardPage() {
               justifyContent: 'space-between',
               alignItems: 'center',
               gap: 24,
-              borderColor: 'rgba(200,241,53,0.2)',
+              borderColor: 'var(--tint-lime-strong)',
               background: 'linear-gradient(135deg, var(--bg1) 0%, rgba(200,241,53,0.03) 100%)',
             }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: 20 }}>
-                <div style={{ width: 48, height: 48, borderRadius: 12, background: 'rgba(200,241,53,0.1)', border: '1px solid rgba(200,241,53,0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                <div style={{ width: 48, height: 48, borderRadius: 12, background: 'var(--tint-lime)', border: '1px solid var(--tint-lime-strong)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
                   <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--lime)" strokeWidth="2">
                     <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/>
                   </svg>

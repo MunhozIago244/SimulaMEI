@@ -47,6 +47,27 @@
   --blue-glow: 0 18px 54px oklch(68% 0.15 252 / 0.12);
   --panel-shadow: 0 26px 80px oklch(2% 0.01 255 / 0.34);
 
+  /* Surface tints (fundos sutis tonalizados que se adaptam ao tema).
+     Usar essas vars em vez de rgba(...) hardcoded garante que o light mode
+     receba versões mais saturadas (sem branco em branco).  */
+  --tint-lime:        oklch(88% 0.19 126 / 0.10);
+  --tint-lime-strong: oklch(88% 0.19 126 / 0.18);
+  --tint-lime-border: oklch(88% 0.19 126 / 0.24);
+  --tint-blue:        oklch(68% 0.15 252 / 0.10);
+  --tint-blue-strong: oklch(68% 0.15 252 / 0.16);
+  --tint-blue-border: oklch(68% 0.15 252 / 0.24);
+  --tint-yellow:        oklch(82% 0.15 85 / 0.10);
+  --tint-yellow-strong: oklch(82% 0.15 85 / 0.18);
+  --tint-yellow-border: oklch(82% 0.15 85 / 0.24);
+  --tint-red:        oklch(66% 0.21 28 / 0.10);
+  --tint-red-strong: oklch(66% 0.21 28 / 0.16);
+  --tint-red-border: oklch(66% 0.21 28 / 0.24);
+  --tint-orange:        oklch(73% 0.18 52 / 0.10);
+  --tint-orange-strong: oklch(73% 0.18 52 / 0.16);
+  --tint-orange-border: oklch(73% 0.18 52 / 0.24);
+  --tint-cyan:        oklch(82% 0.15 215 / 0.10);
+  --tint-cyan-border: oklch(82% 0.15 215 / 0.24);
+
   /* Motion */
   --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
   --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
@@ -77,4 +98,27 @@
   --orange: oklch(47% 0.16 52);
   --cyan: oklch(55% 0.13 215);
   --cyan-dim: oklch(85% 0.07 215);
+
+  /* Light mode: tints mais saturados pra terem contraste sobre fundos claros */
+  --tint-lime:        oklch(48% 0.14 126 / 0.14);
+  --tint-lime-strong: oklch(48% 0.14 126 / 0.22);
+  --tint-lime-border: oklch(48% 0.14 126 / 0.34);
+  --tint-blue:        oklch(46% 0.15 252 / 0.12);
+  --tint-blue-strong: oklch(46% 0.15 252 / 0.20);
+  --tint-blue-border: oklch(46% 0.15 252 / 0.30);
+  --tint-yellow:        oklch(52% 0.13 85 / 0.14);
+  --tint-yellow-strong: oklch(52% 0.13 85 / 0.22);
+  --tint-yellow-border: oklch(52% 0.13 85 / 0.34);
+  --tint-red:        oklch(52% 0.19 28 / 0.12);
+  --tint-red-strong: oklch(52% 0.19 28 / 0.20);
+  --tint-red-border: oklch(52% 0.19 28 / 0.30);
+  --tint-orange:        oklch(47% 0.16 52 / 0.12);
+  --tint-orange-strong: oklch(47% 0.16 52 / 0.20);
+  --tint-orange-border: oklch(47% 0.16 52 / 0.30);
+  --tint-cyan:        oklch(55% 0.13 215 / 0.12);
+  --tint-cyan-border: oklch(55% 0.13 215 / 0.30);
+
+  /* Panel shadow no light também precisa ajuste */
+  --panel-shadow: 0 26px 80px oklch(60% 0.01 255 / 0.12);
+  --lime-glow: 0 18px 54px oklch(48% 0.14 126 / 0.18);
 }
