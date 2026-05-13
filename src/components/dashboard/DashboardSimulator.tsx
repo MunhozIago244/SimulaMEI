@@ -4,6 +4,7 @@ import { useCallback, useRef, useState } from 'react'
 import type { ResultadoSimulacao } from '@/types/tributario'
 import { SimulatorSection } from '@/components/simulador/SimulatorSection'
 import { FullResults } from '@/components/resultado/FullResults'
+import { useScrollReveal } from '@/lib/useScrollReveal'
 
 interface DashboardSimulatorProps {
   /** E-mail do usuário logado — usado pra renderizar FullResults sem gate */
@@ -20,6 +21,7 @@ interface DashboardSimulatorProps {
  * - Reusa SimulatorSection (formulário) e FullResults (análise completa).
  */
 export function DashboardSimulator({ userEmail }: DashboardSimulatorProps) {
+  useScrollReveal() // Sem isso, [data-reveal] do SimulatorSection fica invisible
   const [resultado, setResultado] = useState<ResultadoSimulacao | null>(null)
   const resultadoRef = useRef<HTMLDivElement>(null)
 
