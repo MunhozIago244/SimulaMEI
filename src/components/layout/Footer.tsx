@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import { TAX_RULE_VERSION } from '@/lib/tributario'
+import { SITE_NAME, getLegalIdentity } from '@/constants/site'
 
 const FOOTER_COLUMNS: Array<{ title: string; links: Array<{ label: string; href: string }> }> = [
   {
@@ -33,6 +34,7 @@ const FOOTER_COLUMNS: Array<{ title: string; links: Array<{ label: string; href:
 export function Footer() {
   const year = new Date().getFullYear()
   const versionLabel = TAX_RULE_VERSION.replace('BR-MEI-SN-', 'v')
+  const legal = getLegalIdentity()
 
   return (
     <footer
@@ -101,7 +103,10 @@ export function Footer() {
           fontSize: 12,
           color: 'var(--text3)',
         }}>
-          <span>© {year} SimulaMEI. Não é consultoria tributária.</span>
+          <span>
+            © {year} {SITE_NAME} · {legal.line}
+            {legal.contactEmail ? ` · ${legal.contactEmail}` : ''}. Não é consultoria tributária.
+          </span>
           <span>Estimativas baseadas em regras vigentes — confirme com contador habilitado.</span>
         </div>
       </div>

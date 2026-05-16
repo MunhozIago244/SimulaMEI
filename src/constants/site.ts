@@ -23,6 +23,45 @@ export const SITE_KEYWORDS = [
   'simulador tributário',
 ]
 
+export interface LegalIdentity {
+  entityName: string
+  taxId: string | null
+  contactEmail: string | null
+  /** Single attribution line: "<Razão> · CNPJ <id>" or "Operado por <nome>". */
+  line: string
+}
+
+/**
+ * Resolves the public legal identity from configured values.
+ *
+ * Trust requirement: a fiscal product must say who operates it. We never
+ * fabricate a CNPJ — when no tax id is configured we degrade honestly to
+ * "Operado por <nome>" instead of inventing a company.
+ */
+export function resolveLegalIdentity(env?: {
+  name?: string | null
+  taxId?: string | null
+  email?: string | null
+}): LegalIdentity {
+  const entityName = (env?.name ?? '').trim() || SITE_NAME
+  const taxId = (env?.taxId ?? '').trim() || null
+  const contactEmail = (env?.email ?? '').trim() || null
+  const line = taxId
+    ? `${entityName} · CNPJ ${taxId}`
+    : `Operado por ${entityName}`
+
+  return { entityName, taxId, contactEmail, line }
+}
+
+/** Legal identity resolved from environment (set NEXT_PUBLIC_LEGAL_* in prod). */
+export function getLegalIdentity(): LegalIdentity {
+  return resolveLegalIdentity({
+    name: process.env.NEXT_PUBLIC_LEGAL_ENTITY_NAME,
+    taxId: process.env.NEXT_PUBLIC_LEGAL_TAX_ID,
+    email: process.env.NEXT_PUBLIC_LEGAL_CONTACT_EMAIL,
+  })
+}
+
 /**
  * Canonical origin for metadata, robots and sitemap.
  *
