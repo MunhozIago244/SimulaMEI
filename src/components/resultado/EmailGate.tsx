@@ -2,9 +2,10 @@
 
 import { useState } from 'react'
 import type { ResultadoSimulacao } from '@/types/tributario'
-import { captureProductEvent } from '@/lib/analytics/events'
+import { captureProductEvent, buildEmailCapturedProps, type LeadSaveStatus } from '@/lib/analytics/events'
 import { LoadSpinner } from '@/components/ui'
 import { normalizeEmail } from '@/lib/validation'
+import { getLegalIdentity } from '@/constants/site'
 
 interface EmailGateProps {
   onUnlock: (email: string) => void
@@ -33,6 +34,7 @@ export function EmailGate({ onUnlock, resultado }: EmailGateProps) {
   const [error, setError] = useState('')
   const emailInputId = 'email-gate-email'
   const consentInputId = 'email-gate-consent'
+  const legal = getLegalIdentity()
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
@@ -45,8 +47,9 @@ export function EmailGate({ onUnlock, resultado }: EmailGateProps) {
     setError('')
     setLoading(true)
 
+    let leadSaveStatus: LeadSaveStatus = 'failed'
     try {
-      await fetch('/api/leads', {
+      const response = await fetch('/api/leads', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -61,14 +64,12 @@ export function EmailGate({ onUnlock, resultado }: EmailGateProps) {
           taxRuleVersion: resultado.taxRuleVersion,
         }),
       })
+      leadSaveStatus = response.ok ? 'saved' : 'failed'
     } catch {
       // Non-blocking: proceed even if lead save fails
     } finally {
       setLoading(false)
-      captureProductEvent('email_captured', {
-        cnae: resultado.entrada.cnae,
-        taxRuleVersion: resultado.taxRuleVersion,
-      })
+      captureProductEvent('email_captured', buildEmailCapturedProps(resultado, leadSaveStatus))
       onUnlock(normalizedEmail)
     }
   }
@@ -175,6 +176,9 @@ export function EmailGate({ onUnlock, resultado }: EmailGateProps) {
         </button>
         <p style={{ fontSize: 11, color: 'var(--text3)', textAlign: 'center', marginTop: 8 }}>
           Sem spam. Sua simulação é liberada com consentimento explícito.
+        </p>
+        <p style={{ fontSize: 11, color: 'var(--text3)', textAlign: 'center', marginTop: 4 }}>
+          {legal.line}{legal.contactEmail ? ` · ${legal.contactEmail}` : ''}
         </p>
       </form>
     </div>
