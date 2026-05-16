@@ -16,6 +16,24 @@ export type ProductEventName =
   | 'accountant_checkout_started'
   | 'accountant_billing_portal_opened'
 
+export type LeadSaveStatus = 'saved' | 'failed'
+
+/**
+ * Builds the `email_captured` event payload. Centralizes the analytics
+ * contract so the funnel can measure how many leads actually persisted
+ * (the `/api/leads` call is non-blocking, so success was previously lost).
+ */
+export function buildEmailCapturedProps(
+  resultado: { entrada: { cnae: string }; taxRuleVersion: string },
+  leadSaveStatus: LeadSaveStatus,
+): Record<string, unknown> {
+  return {
+    cnae: resultado.entrada.cnae,
+    taxRuleVersion: resultado.taxRuleVersion,
+    leadSaveStatus,
+  }
+}
+
 export function captureProductEvent(
   event: ProductEventName,
   properties: Record<string, unknown> = {},
