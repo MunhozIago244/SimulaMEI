@@ -68,19 +68,28 @@ SPEC ERRADA (over-engineered): criar ResultadoSimulacaoParcial + branch /api/sim
   - getCnae() (cnae.ts:80) já retorna CnaeInfo classificacaoTributaria:'pendente'
     com fallback conservador Anexo III
   - /api/simular:125 NÃO dá 400 p/ pendente (getCnae truthy) — API já responde
-  - motor já retorna ResultadoSimulacao completo (Anexo/FatorR conservadores;
-    teto/projeção/risco EXATOS)
+  - motor retorna ResultadoSimulacao completo MAS com Anexo/FatorR em
+    FALLBACK conservador (anexoPadrao:'III', elegivelFatorR:false) —
+    NÃO curado. teto/projeção/risco são EXATOS (independem de curadoria).
   - beco sem saída é 100% frontend: SimulatorSection.tsx:60 cnaePendente,
     bloqueio em :128 (handleSimular) e :412 (botão disabled)
-PROBLEM: SimulatorSection recusa enviar CNAE pendente (beco frontend).
-ACTION (mínima, dedup-safe):
+RISCO FISCAL (corrigido): só desbloquear e mostrar o resultado completo
+  exibe Anexo/alíquota/DAS NÃO CURADOS como se fossem confiáveis — pior
+  que bloquear num produto fiscal. Precisa de FRONTEIRA, não tipo gigante.
+PROBLEM: SimulatorSection recusa enviar CNAE pendente (beco frontend);
+  e o resultado completo não pode ser exibido como confiável p/ pendente.
+ACTION (mínima, dedup-safe, com fronteira fiscal):
 - Extrair gate puro testável: pendente NÃO bloqueia; gate = apenas !cnae
 - Remover cnaePendente das condições em handleSimular:128 e botão :412
-- Criar CnaePendenteNotice (banner: teto/projeção exatos; Anexo/FatorR
-  estimativa conservadora; CTA "avisar quando curado") — render JUNTO ao
-  resultado normal quando classificacaoTributaria==='pendente'
-- NÃO criar PartialResults paralelo; NÃO tocar tipo/API/motor
-SUCCESS: CNAE pendente → simula e mostra resultado + notice; teste do gate verde
+- Quando classificacaoTributaria==='pendente': exibir SOMENTE teto/
+  projeção/risco (exatos). SUPRIMIR/travar os cards de Anexo, alíquota,
+  DAS e Fator R (não renderizar fallback conservador como confiável).
+- CnaePendenteNotice: explica que teto é exato e Anexo/Fator R ficam
+  indisponíveis até curadoria; CTA "avisar quando curado"
+- NÃO criar PartialResults paralelo; NÃO tocar tipo/API/motor.
+  A fronteira é de RENDER (que cards mostrar), não de cálculo.
+SUCCESS: CNAE pendente → simula, mostra só teto/projeção + notice,
+  Anexo/Fator R suprimidos; teste do gate e do filtro de cards verdes
 DEP: nenhuma
 ```
 
