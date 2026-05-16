@@ -8,6 +8,8 @@ import { Badge, MonoVal } from '@/components/ui'
 import { ResultCard } from './ResultCard'
 import { EmailGate } from './EmailGate'
 import { ShareResultButton } from './ShareResultButton'
+import { TaxSourceNote } from './TaxSourceNote'
+import { FONTES_FISCAIS } from '@/lib/tributario/oportunidades/fontes'
 
 interface PartialResultsProps {
   resultado: ResultadoSimulacao
@@ -308,6 +310,14 @@ export function PartialResults({ resultado, onUnlock }: PartialResultsProps) {
           contador credenciado. Confirme a decisão final com um profissional habilitado antes de alterar
           seu regime tributário.
         </div>
+
+        {/* Fonte normativa + versão do motor (auditabilidade) */}
+        <TaxSourceNote
+          className="fade-up-3"
+          taxRuleVersion={resultado.taxRuleVersion}
+          fontes={[FONTES_FISCAIS.resolucaoCgsn140, FONTES_FISCAIS.simplesNacionalLegislacao]}
+          style={{ marginBottom: 32 }}
+        />
 
         {/* Email gate */}
         <div className="fade-up-4">
