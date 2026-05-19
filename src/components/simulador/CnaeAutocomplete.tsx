@@ -231,8 +231,25 @@ export function CnaeAutocomplete({ value, onChange, inputId, origin }: CnaeAutoc
           )}
 
           {searchResults && searchResults.length === 0 && (
-            <div style={{ padding: '16px 14px', fontSize: 13, color: 'var(--text3)', textAlign: 'center' }}>
-              Nenhum CNAE encontrado. <Link href="/cnae" style={{ color: 'var(--lime)', textDecoration: 'none' }}>Buscar na base completa →</Link>
+            <div style={{ padding: '16px 14px', fontSize: 13, color: 'var(--text3)', lineHeight: 1.6 }}>
+              <p style={{ margin: '0 0 10px' }}>
+                Nenhum CNAE encontrado. <b>Nem toda atividade é permitida ao MEI</b> —
+                tente o código oficial (formato 0000-0/00) ou a descrição exata.
+              </p>
+              <div style={{ display: 'flex', gap: 16, flexWrap: 'wrap' }}>
+                <Link href="/cnae" style={{ color: 'var(--lime)', textDecoration: 'none', fontWeight: 700 }}>
+                  Buscar na base completa →
+                </Link>
+                <Link href="/aprenda/quando-sair-do-mei" style={{ color: 'var(--blue)', textDecoration: 'none', fontWeight: 700 }}>
+                  Quando sair do MEI →
+                </Link>
+                <a
+                  href={`mailto:?subject=${encodeURIComponent('Sugerir CNAE — SimulaMEI')}&body=${encodeURIComponent('Atividade/código CNAE que não encontrei: ')}`}
+                  style={{ color: 'var(--text2)', textDecoration: 'none', fontWeight: 700 }}
+                >
+                  Sugerir CNAE
+                </a>
+              </div>
             </div>
           )}
 
