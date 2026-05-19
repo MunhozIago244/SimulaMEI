@@ -28,6 +28,14 @@ const securityHeaders = [
 ]
 
 const nextConfig: NextConfig = {
+  // A TTF do relatório vive em src/ e é lida via readFileSync(process.cwd()+...).
+  // O NFT não rastreia paths construídos em runtime, então sem isto o arquivo
+  // some do bundle serverless (Vercel) e o PDF cai pra Helvetica silenciosamente.
+  // Força a inclusão da fonte nas lambdas das duas rotas de relatório.
+  outputFileTracingIncludes: {
+    '/api/relatorio/gerar': ['./src/lib/reports/fonts/SpaceGrotesk.ttf'],
+    '/api/relatorio-premium': ['./src/lib/reports/fonts/SpaceGrotesk.ttf'],
+  },
   async headers() {
     return [
       {
