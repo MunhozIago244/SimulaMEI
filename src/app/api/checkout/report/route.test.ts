@@ -74,4 +74,18 @@ describe('/api/checkout/report POST', () => {
       stripe_session_id: 'cs_report_1',
     }))
   })
+
+  it('returns 502 with the Stripe error message instead of throwing unhandled', async () => {
+    createClientMock.mockResolvedValue(makeServerClient({ id: 'user-1', email: 'user@example.com' }))
+    createBrandedCheckoutSessionMock.mockRejectedValue(
+      new Error("No such price: 'price_x'; a similar object exists in test mode, but a live mode key was used to make this request."),
+    )
+
+    const response = await POST()
+
+    expect(response.status).toBe(502)
+    const payload = await response.json()
+    expect(payload.error).toContain('No such price')
+    expect(insertMock).not.toHaveBeenCalled()
+  })
 })
