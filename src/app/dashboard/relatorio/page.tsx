@@ -42,7 +42,7 @@ export default async function DashboardRelatorioPage() {
   const [{ data: purchases }, { count: reportPurchasesCount }, { data: sims }] = await Promise.all([
     supabase
       .from('purchases')
-      .select('report_fingerprint, simulation_id, created_at')
+      .select('id, report_fingerprint, simulation_id, created_at')
       .eq('user_id', ctx.user.id)
       .eq('produto', 'relatorio')
       .eq('status', 'paid'),
@@ -73,6 +73,31 @@ export default async function DashboardRelatorioPage() {
   const totalReportsPaid = reportPurchasesCount ?? 0
   // Quanto o user já gastou em relatórios avulsos — usado pra reforçar a recomendação
   const { moneySpentLabel, monthsOfProEquivalent } = reportSpendSummary(totalReportsPaid, PRO_PRICE)
+
+  // Lista "Meus relatórios pagos" — só faz sentido pra não-pro (pro tem ilimitado)
+  type PaidPurchase = { id: string; report_fingerprint: string | null; simulation_id: string | null; created_at: string }
+  const showPaidList = ctx.plan !== 'pro' && (purchases?.length ?? 0) > 0
+  type PinnedSimRow = { id: string; resultado: { entrada: { cnae?: string; faturamentoAcumulado?: number } } }
+  const pinnedSimIds = showPaidList
+    ? ((purchases ?? []) as PaidPurchase[]).map(p => p.simulation_id).filter((x): x is string => Boolean(x))
+    : []
+  const { data: pinnedSims } = pinnedSimIds.length
+    ? await supabase.from('simulations').select('id, resultado').in('id', pinnedSimIds)
+    : { data: [] as PinnedSimRow[] }
+  const simById = new Map(((pinnedSims ?? []) as PinnedSimRow[]).map(s => [s.id, s.resultado]))
+  type PaidItem = { id: string; cnae: string | null; faturamento: number | null; createdAt: string; resolved: boolean }
+  const paidItems: PaidItem[] = showPaidList
+    ? ((purchases ?? []) as PaidPurchase[]).map(p => {
+        const sim = p.simulation_id ? simById.get(p.simulation_id) : undefined
+        return {
+          id: p.id,
+          cnae: sim?.entrada?.cnae ?? null,
+          faturamento: typeof sim?.entrada?.faturamentoAcumulado === 'number' ? sim.entrada.faturamentoAcumulado : null,
+          createdAt: p.created_at,
+          resolved: Boolean(sim),
+        }
+      })
+    : []
 
   return (
     <>
@@ -152,6 +177,45 @@ export default async function DashboardRelatorioPage() {
           {/* Se já pagou avulso uma vez e não é Pro, oferece upgrade discreto */}
           {ctx.plan !== 'pro' && totalReportsPaid >= 1 && (
             <ProUpsellCompact totalReportsPaid={totalReportsPaid} moneySpentLabel={moneySpentLabel} monthsEquivalent={monthsOfProEquivalent} />
+          )}
+
+          {/* Histórico de relatórios pagos com re-download 1-clique */}
+          {showPaidList && paidItems.length > 0 && (
+            <section style={{ marginTop: 16 }}>
+              <Panel style={{ padding: 22 }}>
+                <h3 style={{ fontSize: 14, fontWeight: 800, margin: '0 0 12px', color: 'var(--text1)' }}>
+                  Meus relatórios pagos
+                </h3>
+                <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: 10 }}>
+                  {paidItems.map(item => {
+                    const dateStr = new Date(item.createdAt).toLocaleDateString('pt-BR', { timeZone: 'America/Sao_Paulo' })
+                    const label = item.resolved
+                      ? `CNAE ${item.cnae ?? '—'} · ${item.faturamento != null ? `R$ ${item.faturamento.toLocaleString('pt-BR')}` : '—'} · ${dateStr}`
+                      : `Relatório pago em ${dateStr}`
+                    return (
+                      <li key={item.id} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12, padding: '10px 12px', background: 'var(--bg2)', borderRadius: 'var(--radius)' }}>
+                        <div style={{ fontSize: 13, color: 'var(--text2)', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                          {label}
+                        </div>
+                        {item.resolved ? (
+                          <a
+                            href={`/api/relatorio/gerar?purchase=${item.id}`}
+                            download
+                            style={{ fontSize: 12, fontWeight: 700, color: 'var(--ink-on-accent)', background: 'var(--lime)', padding: '6px 12px', borderRadius: 'var(--radius)', textDecoration: 'none', whiteSpace: 'nowrap' }}
+                          >
+                            Baixar PDF
+                          </a>
+                        ) : (
+                          <span style={{ fontSize: 11, color: 'var(--text3)', fontStyle: 'italic' }}>
+                            Indisponível — refaça a simulação com os mesmos dados
+                          </span>
+                        )}
+                      </li>
+                    )
+                  })}
+                </ul>
+              </Panel>
+            </section>
           )}
         </section>
       ) : (
