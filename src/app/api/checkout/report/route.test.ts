@@ -28,12 +28,28 @@ vi.mock('@/lib/stripe', () => ({
 
 import { POST } from './route'
 
-function makeServerClient(user: { id: string; email?: string } | null) {
+function makeQuery(data: unknown) {
+  const query = {
+    select: vi.fn(() => query),
+    eq: vi.fn(() => query),
+    order: vi.fn(() => query),
+    limit: vi.fn().mockResolvedValue({ data }),
+  }
+  return query
+}
+
+function makeServerClient(
+  user: { id: string; email?: string } | null,
+  opts?: { simulations?: unknown[] },
+) {
   return {
     auth: {
       getUser: vi.fn().mockResolvedValue({ data: { user } }),
     },
-    from: vi.fn(() => ({ insert: insertMock })),
+    from: vi.fn((table: string) => {
+      if (table === 'simulations') return makeQuery(opts?.simulations ?? [])
+      return { insert: insertMock }
+    }),
   }
 }
 
@@ -55,7 +71,10 @@ describe('/api/checkout/report POST', () => {
   })
 
   it('creates a payment checkout session and records the pending purchase', async () => {
-    createClientMock.mockResolvedValue(makeServerClient({ id: 'user-1', email: 'user@example.com' }))
+    createClientMock.mockResolvedValue(makeServerClient(
+      { id: 'user-1', email: 'user@example.com' },
+      { simulations: [{ resultado: { entrada: { faturamentoAcumulado: 60000 }, alertaTeto: { projecaoAnual: 1 } } }] },
+    ))
 
     const response = await POST()
 
@@ -76,7 +95,10 @@ describe('/api/checkout/report POST', () => {
   })
 
   it('returns 502 with the Stripe error message instead of throwing unhandled', async () => {
-    createClientMock.mockResolvedValue(makeServerClient({ id: 'user-1', email: 'user@example.com' }))
+    createClientMock.mockResolvedValue(makeServerClient(
+      { id: 'user-1', email: 'user@example.com' },
+      { simulations: [{ resultado: { entrada: { faturamentoAcumulado: 60000 }, alertaTeto: { projecaoAnual: 1 } } }] },
+    ))
     createBrandedCheckoutSessionMock.mockRejectedValue(
       new Error("No such price: 'price_x'; a similar object exists in test mode, but a live mode key was used to make this request."),
     )
@@ -87,5 +109,32 @@ describe('/api/checkout/report POST', () => {
     const payload = await response.json()
     expect(payload.error).toContain('No such price')
     expect(insertMock).not.toHaveBeenCalled()
+  })
+
+  it('calcula fingerprint da simulação atual e injeta no checkout + insert', async () => {
+    const entrada = { cnae: '6201-5/01', tipoMei: 'geral', mesAtual: 5, faturamentoAcumulado: 68000, folhaMensal: 4000 }
+    createClientMock.mockResolvedValue(makeServerClient(
+      { id: 'user-1', email: 'u@e.com' },
+      { simulations: [{ resultado: { entrada, alertaTeto: { projecaoAnual: 163200 } } }] },
+    ))
+
+    const response = await POST()
+
+    expect(response.status).toBe(200)
+    const extra = createBrandedCheckoutSessionMock.mock.calls[0][0].extraMetadata
+    expect(extra.report_fingerprint).toMatch(/^[a-f0-9]{64}$/)
+    expect(insertMock).toHaveBeenCalledWith(expect.objectContaining({
+      report_fingerprint: extra.report_fingerprint,
+    }))
+  })
+
+  it('bloqueia checkout (422) quando não há simulação ou está vazia', async () => {
+    createClientMock.mockResolvedValue(makeServerClient(
+      { id: 'user-1', email: 'u@e.com' },
+      { simulations: [] },
+    ))
+    const response = await POST()
+    expect(response.status).toBe(422)
+    expect(createBrandedCheckoutSessionMock).not.toHaveBeenCalled()
   })
 })
