@@ -4,11 +4,13 @@ import type { ResultadoSimulacao } from '@/types/tributario'
 import { fmt, fmtPct } from '@/lib/format'
 import { TOLERANCIA_EXCESSO } from '@/lib/tributario/limitesMei'
 import { calcFiscalScore, getFiscalScoreEstado } from '@/lib/tributario/fiscalScore'
+import { getCnae } from '@/lib/tributario'
 import { Badge, MonoVal } from '@/components/ui'
 import { ResultCard } from './ResultCard'
 import { EmailGate } from './EmailGate'
 import { ShareResultButton } from './ShareResultButton'
 import { TaxSourceNote } from './TaxSourceNote'
+import { CnaePendenteNotice, resultadoVisibilidade } from './CnaePendenteNotice'
 import { FONTES_FISCAIS } from '@/lib/tributario/oportunidades/fontes'
 
 interface PartialResultsProps {
@@ -94,6 +96,11 @@ export function PartialResults({ resultado, onUnlock }: PartialResultsProps) {
   const impostoAnual = comparativo.simplesAnexoAtual.dasAnual
   const cnaeDescricao = entrada.cnae
 
+  // Fronteira fiscal: CNAE oficial sem curadoria cai em fallback conservador.
+  // Só teto/projeção (exatos) são exibidos; Anexo/Fator R/gate ficam ocultos.
+  const classificacao = getCnae(entrada.cnae)?.classificacaoTributaria
+  const vis = resultadoVisibilidade(classificacao)
+
   return (
     <section id="resultado" style={{ padding: '0 0 60px' }}>
       <div style={{ maxWidth: 1200, margin: '0 auto', padding: '0 40px' }}>
@@ -132,7 +139,8 @@ export function PartialResults({ resultado, onUnlock }: PartialResultsProps) {
           </div>
         </div>
 
-        {/* 3 result cards */}
+        {/* 3 result cards — só quando o CNAE tem curadoria tributária */}
+        {vis.mostrarTributacao && (
         <div
           style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 16, marginBottom: 32 }}
           className="fade-up-2 res-grid"
@@ -159,9 +167,12 @@ export function PartialResults({ resultado, onUnlock }: PartialResultsProps) {
             tip="Pontuação baseada em uso do teto, Fator R e completude dos dados."
           />
         </div>
+        )}
+
+        {vis.mostrarNoticePendente && <CnaePendenteNotice cnae={entrada.cnae} />}
 
         {/* Fator R preview (serviços elegíveis) */}
-        {fatorR && (
+        {vis.mostrarTributacao && fatorR && (
           <div
             className="fade-up-2"
             style={{
@@ -315,17 +326,23 @@ export function PartialResults({ resultado, onUnlock }: PartialResultsProps) {
         <TaxSourceNote
           className="fade-up-3"
           taxRuleVersion={resultado.taxRuleVersion}
-          mapeamento={[
-            { valores: 'Anexo, alíquota e DAS', fonte: FONTES_FISCAIS.resolucaoCgsn140 },
-            { valores: 'Teto MEI', fonte: FONTES_FISCAIS.simplesNacionalLegislacao },
-          ]}
+          mapeamento={
+            vis.mostrarTributacao
+              ? [
+                  { valores: 'Anexo, alíquota e DAS', fonte: FONTES_FISCAIS.resolucaoCgsn140 },
+                  { valores: 'Teto MEI', fonte: FONTES_FISCAIS.simplesNacionalLegislacao },
+                ]
+              : [{ valores: 'Teto MEI', fonte: FONTES_FISCAIS.simplesNacionalLegislacao }]
+          }
           style={{ marginBottom: 32 }}
         />
 
-        {/* Email gate */}
-        <div className="fade-up-4">
-          <EmailGate onUnlock={onUnlock} resultado={resultado} />
-        </div>
+        {/* Email gate — oculto p/ CNAE pendente (análise completa também seria não curada) */}
+        {vis.mostrarGate && (
+          <div className="fade-up-4">
+            <EmailGate onUnlock={onUnlock} resultado={resultado} />
+          </div>
+        )}
       </div>
     </section>
   )

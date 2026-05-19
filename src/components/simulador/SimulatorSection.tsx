@@ -125,7 +125,7 @@ export function SimulatorSection({
   }
 
   async function handleSimular() {
-    if (!cnae || cnaePendente) return
+    if (!cnae) return
     setRequestError('')
     setLoading(true)
     trackSimulationStart()
@@ -290,7 +290,7 @@ export function SimulatorSection({
                   <Validation validation={{ msg: 'Selecione a atividade para calcular o Anexo correto', type: 'warn' }} />
                 )}
                 {cnaePendente && (
-                  <Validation validation={{ msg: 'CNAE oficial encontrado; falta curadoria tributária para calcular Anexo e Fator R', type: 'warn' }} />
+                  <Validation validation={{ msg: 'CNAE oficial. Teto e projeção saem exatos; Anexo e Fator R ficam indisponíveis até este CNAE ter curadoria.', type: 'warn' }} />
                 )}
               </div>
 
@@ -409,10 +409,10 @@ export function SimulatorSection({
                 type="button"
                 className="pressable sim-cta-primary"
                 onClick={handleSimular}
-                disabled={!cnae || cnaePendente || loading}
+                disabled={!cnae || loading}
                 style={{
-                  background: cnae && !cnaePendente ? 'var(--lime)' : 'var(--bg3)',
-                  color: cnae && !cnaePendente ? 'var(--ink-on-accent)' : 'var(--text3)',
+                  background: cnae ? 'var(--lime)' : 'var(--bg3)',
+                  color: cnae ? 'var(--ink-on-accent)' : 'var(--text3)',
                 }}
               >
                 {loading ? (
