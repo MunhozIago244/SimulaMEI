@@ -43,12 +43,15 @@ function makeRequest(body: unknown = {}) {
 }
 
 function makeQuery(data: unknown) {
-  const query = {
+  const query: Record<string, unknown> = {
     select: vi.fn(() => query),
     eq: vi.fn(() => query),
     order: vi.fn(() => query),
     limit: vi.fn().mockResolvedValue({ data }),
     maybeSingle: vi.fn().mockResolvedValue({ data }),
+    // Chainable também é "thenable": permite `await supabase.from(...).select(...).eq(...)`
+    // sem precisar de .limit() no final (caso das queries de purchases após o gate por fingerprint).
+    then: (resolve: (v: { data: unknown }) => unknown) => resolve({ data }),
   }
   return query
 }
@@ -101,7 +104,7 @@ describe('/api/relatorio-premium POST', () => {
     expect(response.status).toBe(403)
   })
 
-  it('requires a paid report or pro plan before generating the PDF', async () => {
+  it('bloqueia 422 quando a simulação está vazia (mesmo sem acesso)', async () => {
     createClientMock.mockResolvedValue(makeServerClient({
       user: { id: 'user-1' },
       profile: { plano: 'free' },
@@ -111,7 +114,7 @@ describe('/api/relatorio-premium POST', () => {
 
     const response = await POST(makeRequest())
 
-    expect(response.status).toBe(403)
+    expect(response.status).toBe(422)
   })
 
   it('requires a saved simulation after access is confirmed', async () => {
@@ -160,6 +163,19 @@ describe('/api/relatorio-premium POST', () => {
 
     expect(response.status).toBe(422)
     expect(renderToBufferMock).not.toHaveBeenCalled()
+  })
+
+  it('libera 200 para free user quando o fingerprint da simulação atual já foi pago', async () => {
+    const entrada = makeResultado().entrada
+    const fp = (await import('@/lib/reports/reportFingerprint')).reportFingerprint(entrada)
+    createClientMock.mockResolvedValue(makeServerClient({
+      user: { id: 'user-1', email: 'user@example.com' },
+      profile: { plano: 'free' },
+      purchases: [{ report_fingerprint: fp }],
+      simulations: [{ resultado: makeResultado() }],
+    }))
+    const response = await POST(makeRequest())
+    expect(response.status).toBe(200)
   })
 })
 

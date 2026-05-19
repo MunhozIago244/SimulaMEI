@@ -1,5 +1,6 @@
 import { createClient } from '@/lib/supabase/server'
 import { hasReportAccess } from '@/lib/auth/report-access'
+import { reportFingerprint } from '@/lib/reports/reportFingerprint'
 import { REPORT_PRICE_BRL, REPORT_PRICE_LABEL, REPORT_PRICE_CENTAVOS, formatBRL, reportSpendSummary } from '@/constants/pricing'
 import { CheckoutButton } from '@/components/billing/CheckoutButton'
 import { DownloadReportButton } from '@/components/billing/DownloadReportButton'
@@ -37,23 +38,37 @@ export default async function DashboardRelatorioPage() {
   const ctx = await getDashboardContext()
   const supabase = await createClient()
 
-  const [{ data: purchases }, { count: reportPurchasesCount }] = await Promise.all([
+  const [{ data: purchases }, { count: reportPurchasesCount }, { data: sims }] = await Promise.all([
     supabase
       .from('purchases')
-      .select('id')
+      .select('report_fingerprint, simulation_id, created_at')
       .eq('user_id', ctx.user.id)
       .eq('produto', 'relatorio')
-      .eq('status', 'paid')
-      .limit(1),
+      .eq('status', 'paid'),
     supabase
       .from('purchases')
       .select('id', { count: 'exact', head: true })
       .eq('user_id', ctx.user.id)
       .eq('produto', 'relatorio')
       .eq('status', 'paid'),
+    supabase
+      .from('simulations')
+      .select('resultado')
+      .eq('user_id', ctx.user.id)
+      .order('created_at', { ascending: false })
+      .limit(1),
   ])
 
-  const hasAccess = hasReportAccess(ctx.plan, purchases?.length ?? 0)
+  const latest = (sims?.[0] as { resultado?: { entrada?: never } } | undefined)?.resultado
+  const currentFp = latest ? reportFingerprint(latest.entrada) : null
+  const paidFps = (purchases ?? [])
+    .map(p => (p as { report_fingerprint: string | null }).report_fingerprint)
+    .filter(Boolean) as string[]
+  const hasAccess = hasReportAccess({
+    plan: ctx.plan,
+    paidFingerprints: paidFps,
+    currentFingerprint: currentFp,
+  })
   const totalReportsPaid = reportPurchasesCount ?? 0
   // Quanto o user já gastou em relatórios avulsos — usado pra reforçar a recomendação
   const { moneySpentLabel, monthsOfProEquivalent } = reportSpendSummary(totalReportsPaid, PRO_PRICE)
@@ -126,7 +141,7 @@ export default async function DashboardRelatorioPage() {
                 <p style={{ fontSize: 13, color: 'var(--text2)', lineHeight: 1.55, margin: 0, maxWidth: 540 }}>
                   {ctx.plan === 'pro'
                     ? 'Seu Plano Pro inclui geração ilimitada de relatórios. Baixe quantos cenários quiser.'
-                    : 'Você adquiriu o relatório avulso. Pode baixar quantas vezes precisar enquanto sua simulação for válida.'}
+                    : 'Você pagou por este relatório — pode baixá-lo quantas vezes precisar.'}
                 </p>
               </div>
               <DownloadReportButton />

@@ -1,5 +1,6 @@
 import { redirect } from 'next/navigation'
 import { hasReportAccess } from '@/lib/auth/report-access'
+import { reportFingerprint } from '@/lib/reports/reportFingerprint'
 import { REPORT_PRICE_LABEL } from '@/constants/pricing'
 import { CheckoutButton } from '@/components/billing/CheckoutButton'
 import { DownloadReportButton } from '@/components/billing/DownloadReportButton'
@@ -19,18 +20,32 @@ export default async function RelatorioPage() {
     redirect('/auth/login?next=/relatorio')
   }
 
-  const [{ data: profile }, { data: purchases }] = await Promise.all([
+  const [{ data: profile }, { data: purchases }, { data: sims }] = await Promise.all([
     supabase.from('user_profiles').select('plano').eq('id', user.id).maybeSingle(),
     supabase
       .from('purchases')
-      .select('id')
+      .select('report_fingerprint')
       .eq('user_id', user.id)
       .eq('produto', 'relatorio')
-      .eq('status', 'paid')
+      .eq('status', 'paid'),
+    supabase
+      .from('simulations')
+      .select('resultado')
+      .eq('user_id', user.id)
+      .order('created_at', { ascending: false })
       .limit(1),
   ])
 
-  const hasAccess = hasReportAccess(profile?.plano, purchases?.length ?? 0)
+  const latest = (sims?.[0] as { resultado?: { entrada?: never } } | undefined)?.resultado
+  const currentFp = latest ? reportFingerprint(latest.entrada) : null
+  const paidFps = (purchases ?? [])
+    .map(p => (p as { report_fingerprint: string | null }).report_fingerprint)
+    .filter(Boolean) as string[]
+  const hasAccess = hasReportAccess({
+    plan: profile?.plano,
+    paidFingerprints: paidFps,
+    currentFingerprint: currentFp,
+  })
 
   return (
     <StaticPageLayout
@@ -51,7 +66,7 @@ export default async function RelatorioPage() {
         {hasAccess ? (
           <div style={{ display: 'grid', gap: 12 }}>
             <div style={{ color: 'var(--text2)' }}>
-              Seu acesso já está liberado.
+              Este relatório já está liberado.
             </div>
             <DownloadReportButton />
           </div>
@@ -68,7 +83,7 @@ export default async function RelatorioPage() {
               }}
             />
             <div style={{ color: 'var(--text2)' }}>
-              Compra avulsa do relatório: <strong style={{ color: 'var(--text1)' }}>{REPORT_PRICE_LABEL}</strong>
+              Liberar este relatório: <strong style={{ color: 'var(--text1)' }}>{REPORT_PRICE_LABEL}</strong>
             </div>
             <CheckoutButton endpoint="/api/checkout/report" eventName="pdf_cta_clicked">
               Liberar PDF — {REPORT_PRICE_LABEL}
