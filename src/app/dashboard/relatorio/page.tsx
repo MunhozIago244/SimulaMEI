@@ -1,4 +1,5 @@
 import { createClient } from '@/lib/supabase/server'
+import { hasReportAccess } from '@/lib/auth/report-access'
 import { REPORT_PRICE_BRL, REPORT_PRICE_LABEL, REPORT_PRICE_CENTAVOS, formatBRL, reportSpendSummary } from '@/constants/pricing'
 import { CheckoutButton } from '@/components/billing/CheckoutButton'
 import { DownloadReportButton } from '@/components/billing/DownloadReportButton'
@@ -52,7 +53,7 @@ export default async function DashboardRelatorioPage() {
       .eq('status', 'paid'),
   ])
 
-  const hasAccess = ctx.plan === 'pro' || (purchases?.length ?? 0) > 0
+  const hasAccess = hasReportAccess(ctx.plan, purchases?.length ?? 0)
   const totalReportsPaid = reportPurchasesCount ?? 0
   // Quanto o user já gastou em relatórios avulsos — usado pra reforçar a recomendação
   const { moneySpentLabel, monthsOfProEquivalent } = reportSpendSummary(totalReportsPaid, PRO_PRICE)

@@ -3,6 +3,7 @@ import { NextResponse } from 'next/server'
 import { renderToBuffer } from '@react-pdf/renderer'
 import type { DocumentProps } from '@react-pdf/renderer'
 import { createClient } from '@/lib/supabase/server'
+import { hasReportAccess } from '@/lib/auth/report-access'
 import { gerarOportunidadesFiscais } from '@/lib/tributario'
 import { SimulationReportDocument } from '@/lib/reports/SimulationReportDocument'
 import type { ResultadoSimulacao } from '@/types/tributario'
@@ -36,7 +37,7 @@ export async function GET() {
       .limit(1),
   ])
 
-  const hasAccess = profile?.plano === 'pro' || (purchases?.length ?? 0) > 0
+  const hasAccess = hasReportAccess(profile?.plano, purchases?.length ?? 0)
   if (!hasAccess) {
     return NextResponse.json({ error: 'Compre o relatório ou ative o plano Pro para baixar o PDF.' }, { status: 403 })
   }

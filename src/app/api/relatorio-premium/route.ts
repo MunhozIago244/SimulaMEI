@@ -4,6 +4,7 @@ import Anthropic from '@anthropic-ai/sdk'
 import { Document, Page, StyleSheet, Text, View, renderToBuffer } from '@react-pdf/renderer'
 import type { DocumentProps } from '@react-pdf/renderer'
 import { createClient } from '@/lib/supabase/server'
+import { hasReportAccess } from '@/lib/auth/report-access'
 import { gerarOportunidadesFiscais } from '@/lib/tributario'
 import { fmt, fmtPct } from '@/lib/format'
 import type { ResultadoSimulacao } from '@/types/tributario'
@@ -228,7 +229,7 @@ export async function POST(request: NextRequest) {
       .limit(1),
   ])
 
-  const hasAccess = profile?.plano === 'pro' || (purchases?.length ?? 0) > 0
+  const hasAccess = hasReportAccess(profile?.plano, purchases?.length ?? 0)
   if (!hasAccess) {
     return NextResponse.json({ error: 'Pagamento ou Plano Pro obrigatório para gerar relatório premium.' }, { status: 403 })
   }

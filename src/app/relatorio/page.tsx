@@ -1,4 +1,5 @@
 import { redirect } from 'next/navigation'
+import { hasReportAccess } from '@/lib/auth/report-access'
 import { REPORT_PRICE_LABEL } from '@/constants/pricing'
 import { CheckoutButton } from '@/components/billing/CheckoutButton'
 import { DownloadReportButton } from '@/components/billing/DownloadReportButton'
@@ -29,7 +30,7 @@ export default async function RelatorioPage() {
       .limit(1),
   ])
 
-  const hasAccess = profile?.plano === 'pro' || (purchases?.length ?? 0) > 0
+  const hasAccess = hasReportAccess(profile?.plano, purchases?.length ?? 0)
 
   return (
     <StaticPageLayout
