@@ -670,23 +670,28 @@ Gaps: nenhum. Ajuste inline aplicado: Task 7 usa `402` para "compra necessária"
 
 ---
 
-## RESUME STATE (atualizado 2026-05-19 — após Task 6, 6/8)
+## RESUME STATE (2026-05-19 — 8/8 TASKS CONCLUÍDAS)
 
-Execução subagent-driven em andamento. Retomar da **Task 7**.
+Todas as 8 tasks do plano feitas e verificadas (spec + qualidade independentes). Falta só: **review final do conjunto** (em curso) → `superpowers:finishing-a-development-branch`.
 
-**Onde:** worktree isolado `.claude/worktrees/relatorio-pdf-redesign`, branch `claude/relatorio-pdf-redesign`. `npm install` já feito. Árvore limpa, tip (`9956aa3`) compila standalone, suíte `npx vitest run` = **202 pass / 0 fail** (baseline para regressão — ver gotcha 8: caiu de 203 p/ 202 DE PROPÓSITO na Task 6).
+**Onde:** worktree isolado `.claude/worktrees/relatorio-pdf-redesign`, branch `claude/relatorio-pdf-redesign`. Tip `1f24143`, compila standalone, suíte `npx vitest run` = **202 pass / 0 fail** (baseline correto — ver gotcha 8).
 
-**Concluídas e verificadas (spec + qualidade independentes):**
+**Concluídas e verificadas:**
 - Task 1 — `src/constants/pricing.ts` (+test). `df126a7`→`2a5193b`→`f7fc8f9`.
 - Task 2 — fonte única + framing honesto + helper `reportSpendSummary`. `cb84256`+`e42ba10`.
 - Task 3 — `src/lib/auth/report-access.ts` `hasReportAccess` (+test), 4 cópias. `0fb0bb6`.
 - Task 4 — `src/lib/reports/reportTemplate.ts` (+test). `8d29692`.
-- Task 5 — reescrita `SimulationReportDocument.tsx` (fru-fru + variant + CNAE pendente). `30f160d`+`530d534`.
-- Task 6 — ambas as rotas usam o componente único; **IA do premium APOSENTADA por decisão de produto** (premium == PDF padrão; removido `generateAiAnalysis`/Anthropic). `ac86a1b`+`11c634c`+`9956aa3`.
+- Task 5 — reescrita `SimulationReportDocument.tsx` (fru-fru + variant + CNAE pendente; fonte bundlada). `30f160d`+`530d534`.
+- Task 6 — rotas no componente único; **IA do premium APOSENTADA (decisão de produto)** — premium == PDF padrão; `generateAiAnalysis`/Anthropic removidos. `ac86a1b`+`11c634c`+`9956aa3`.
+- Task 7 — preview travado `?preview=1` (auth+ownership preservados, só gate de compra relaxa) + CTA `Liberar PDF — R$ 9,90` (reusa CheckoutButton) + nota `.env`. `e855857`.
+- Task 8 — `scripts/gen-sample-report.mjs` + `sample-*.pdf` gitignored. `1f24143`. Samples gerados em `sample-{preview,full}.pdf` na raiz do worktree.
 
-**Restantes (texto completo nas seções acima):** Task 7 (preview travado `?preview=1` + CTA R$ 9,90 + nota `.env`), Task 8 (script de amostra; depois review final do conjunto + `finishing-a-development-branch`).
+**Pendências (documentadas, NÃO bloqueiam o código; decisão/ação do dono):**
+1. **Stripe Price**: criar Price de 990 BRL e setar `STRIPE_PRICE_REPORT_ID` (sem isso o Stripe cobra o valor antigo, apesar de código/UI R$ 9,90). `.env.example` documenta.
+2. **Validação visual** dos PDFs `sample-preview.pdf` / `sample-full.pdf` (raiz do worktree) — fonte/marca d'água/layout. Só o humano valida; agentes só confirmaram que são PDFs reais.
+3. **Follow-up de teste (Minor, recomendado pelo code-review da Task 7, não-bloqueante):** criar `src/app/api/relatorio/gerar/route.test.ts` cobrindo a matriz de acesso (401 / 402 sem compra / preview / full p/ pro mesmo com `?preview=1` / 404) — copiar o harness de `src/app/api/relatorio-premium/route.test.ts` (mock `createClient`/`@react-pdf/renderer`, sem render real). Plano não definiu teste p/ Task 7; capturado como dívida de alto valor em código de controle de acesso pago.
 
-**Gotchas aprendidas (aplicar na retomada):**
+**Gotchas aprendidas (registro):**
 1. Subagentes filaram **4 relatórios imprecisos/FALSOS** neste run → SEMPRE verificar spec+qualidade independentes lendo código/git e re-rodando; nunca confiar no report. Checar `git status --porcelain` após cada commit.
 2. Nº de linha do plano DESATUALIZADOS → localizar alvos por CONTEÚDO.
 3. Ler via `git show <sha>:<arquivo>` ou caminho ABSOLUTO do worktree.
@@ -697,6 +702,4 @@ Execução subagent-driven em andamento. Retomar da **Task 7**.
 8. **Baseline suíte = 202, não 203.** Task 6 removeu de propósito o teste obsoleto "503 quando Anthropic não configurado" (IA aposentada). 202/0 É o estado limpo; não tratar a queda de 1 como regressão.
 9. Task 7: verificar o MÉTODO HTTP de `relatorio/gerar/route.ts` antes do `<iframe src=...preview=1>` — iframe faz GET; se a rota for POST-only o preview-embed não funciona como está e precisa adaptação (reportar, não chutar).
 
-**Pendência do dono (fora do código, bloqueia cobrança real):** criar Stripe Price de 990 BRL e setar `STRIPE_PRICE_REPORT_ID`. Task 7 Step 3 documenta no `.env.example`.
-
-**Como retomar:** sessão nova → ler este plano (incl. este RESUME) → `superpowers:subagent-driven-development` a partir da **Task 7**, worktree acima.
+**Próximo passo:** review final do conjunto (`8dad2df..1f24143`, todas as 8 tasks como uma unidade) em curso → depois `superpowers:finishing-a-development-branch` (merge/PR/cleanup). As 3 pendências acima são do dono e não bloqueiam o merge do código.
