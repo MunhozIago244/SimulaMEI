@@ -5,6 +5,7 @@ import { calcularSimples } from '@/lib/tributario'
 import { FATOR_R_MINIMO } from '@/lib/tributario/fatorR'
 import { fmt, fmtPct } from '@/lib/format'
 import { MonoVal, Divider } from '@/components/ui'
+import { usoTetoPercent, barraTetoWidth } from './usoTeto'
 
 interface LivePreviewPanelProps {
   fat: number
@@ -40,7 +41,7 @@ function MetricCell({ label, value, color }: { label: string; value: string; col
 export function LivePreviewPanel({
   cnae, prolabore, projecao, excesso, fatorR, teto,
 }: LivePreviewPanelProps) {
-  const pctTeto = Math.min((projecao / teto) * 100, 130)
+  const pctTeto = usoTetoPercent(projecao, teto)
   const barColor = excesso > 1.2
     ? 'var(--red)'
     : excesso > 1.0
@@ -95,7 +96,7 @@ export function LivePreviewPanel({
         <div style={{ height: 7, background: 'var(--bg3)', borderRadius: 999, position: 'relative', overflow: 'visible' }}>
           <div style={{
             position: 'absolute', top: 0, left: 0, height: '100%',
-            width: Math.min(pctTeto, 100) + '%',
+            width: barraTetoWidth(pctTeto) + '%',
             background: barColor, borderRadius: 999,
             transition: 'width 420ms cubic-bezier(0.16,1,0.3,1), background 300ms var(--ease-out), box-shadow 300ms var(--ease-out)',
             boxShadow: excesso > 1.2
