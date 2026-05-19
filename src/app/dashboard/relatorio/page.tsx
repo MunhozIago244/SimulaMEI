@@ -1,5 +1,5 @@
 import { createClient } from '@/lib/supabase/server'
-import { REPORT_PRICE_BRL, REPORT_PRICE_LABEL } from '@/constants/pricing'
+import { REPORT_PRICE_BRL, REPORT_PRICE_LABEL, REPORT_PRICE_CENTAVOS, formatBRL, reportSpendSummary } from '@/constants/pricing'
 import { CheckoutButton } from '@/components/billing/CheckoutButton'
 import { DownloadReportButton } from '@/components/billing/DownloadReportButton'
 import { DashboardPageHeader } from '@/components/dashboard/DashboardPageHeader'
@@ -55,8 +55,7 @@ export default async function DashboardRelatorioPage() {
   const hasAccess = ctx.plan === 'pro' || (purchases?.length ?? 0) > 0
   const totalReportsPaid = reportPurchasesCount ?? 0
   // Quanto o user já gastou em relatórios avulsos — usado pra reforçar a recomendação
-  const moneySpentOnReports = totalReportsPaid * REPORT_PRICE
-  const monthsOfProEquivalent = Math.floor(moneySpentOnReports / PRO_PRICE)
+  const { moneySpentLabel, monthsOfProEquivalent } = reportSpendSummary(totalReportsPaid, PRO_PRICE)
 
   return (
     <>
@@ -135,7 +134,7 @@ export default async function DashboardRelatorioPage() {
 
           {/* Se já pagou avulso uma vez e não é Pro, oferece upgrade discreto */}
           {ctx.plan !== 'pro' && totalReportsPaid >= 1 && (
-            <ProUpsellCompact totalReportsPaid={totalReportsPaid} moneySpent={moneySpentOnReports} monthsEquivalent={monthsOfProEquivalent} />
+            <ProUpsellCompact totalReportsPaid={totalReportsPaid} moneySpentLabel={moneySpentLabel} monthsEquivalent={monthsOfProEquivalent} />
           )}
         </section>
       ) : (
@@ -326,7 +325,7 @@ function ValueComparisonCard({ reportPrice, reportPriceLabel, proPrice }: { repo
 }
 
 /** Upsell compacto quando user já comprou relatório avulso pelo menos 1× */
-function ProUpsellCompact({ totalReportsPaid, moneySpent, monthsEquivalent }: { totalReportsPaid: number; moneySpent: number; monthsEquivalent: number }) {
+function ProUpsellCompact({ totalReportsPaid, moneySpentLabel, monthsEquivalent }: { totalReportsPaid: number; moneySpentLabel: string; monthsEquivalent: number }) {
   return (
     <Panel style={{
       padding: 22,
@@ -349,7 +348,7 @@ function ProUpsellCompact({ totalReportsPaid, moneySpent, monthsEquivalent }: { 
             Você já comprou {totalReportsPaid} {totalReportsPaid === 1 ? 'relatório' : 'relatórios'}
           </div>
           <h3 style={{ fontSize: 16, fontWeight: 800, margin: '0 0 4px' }}>
-            Esses R$ {moneySpent} {monthsEquivalent > 1 ? `dariam ${monthsEquivalent} meses de Pro` : 'já dariam Pro ilimitado'}
+            Esses {moneySpentLabel} {monthsEquivalent >= 1 ? `já dariam ${monthsEquivalent} ${monthsEquivalent === 1 ? 'mês' : 'meses'} de Pro` : 'já cobrem parte do Pro'}
           </h3>
           <p style={{ fontSize: 12, color: 'var(--text3)', lineHeight: 1.5, margin: 0 }}>
             No Plano Pro você gera quantos relatórios quiser por R$ {PRO_PRICE}/mês, mais monitor mensal, alertas e API.

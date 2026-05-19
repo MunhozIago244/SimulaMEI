@@ -8,3 +8,16 @@ export function formatBRL(centavos: number): string {
   // String.fromCharCode(160) evita qualquer caractere invisivel no fonte.
   return (centavos / 100).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }).replace(new RegExp(String.fromCharCode(160), 'g'), ' ')
 }
+
+/** Resumo do gasto acumulado em relatorios avulsos, base do upsell pro Plano Pro.
+ *  Label e meses derivam da MESMA fonte em centavos pra nunca divergir de unidade. */
+export function reportSpendSummary(
+  totalReportsPaid: number,
+  proPriceBrl: number,
+): { moneySpentLabel: string; monthsOfProEquivalent: number } {
+  const moneySpentCentavos = totalReportsPaid * REPORT_PRICE_CENTAVOS
+  return {
+    moneySpentLabel: formatBRL(moneySpentCentavos),
+    monthsOfProEquivalent: Math.floor(moneySpentCentavos / 100 / proPriceBrl),
+  }
+}
