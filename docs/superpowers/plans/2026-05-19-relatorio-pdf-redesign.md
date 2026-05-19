@@ -670,30 +670,33 @@ Gaps: nenhum. Ajuste inline aplicado: Task 7 usa `402` para "compra necessária"
 
 ---
 
-## RESUME STATE (atualizado 2026-05-19 — após Task 5, 5/8)
+## RESUME STATE (atualizado 2026-05-19 — após Task 6, 6/8)
 
-Execução subagent-driven em andamento. Retomar da **Task 6**.
+Execução subagent-driven em andamento. Retomar da **Task 7**.
 
-**Onde:** worktree isolado `.claude/worktrees/relatorio-pdf-redesign`, branch `claude/relatorio-pdf-redesign`. `npm install` já feito. Árvore limpa, tip (`530d534`) compila standalone, suíte `npx vitest run` = **203 pass / 0 fail** (baseline para regressão).
+**Onde:** worktree isolado `.claude/worktrees/relatorio-pdf-redesign`, branch `claude/relatorio-pdf-redesign`. `npm install` já feito. Árvore limpa, tip (`9956aa3`) compila standalone, suíte `npx vitest run` = **202 pass / 0 fail** (baseline para regressão — ver gotcha 8: caiu de 203 p/ 202 DE PROPÓSITO na Task 6).
 
 **Concluídas e verificadas (spec + qualidade independentes):**
 - Task 1 — `src/constants/pricing.ts` (+test). `df126a7`→`2a5193b`→`f7fc8f9`.
-- Task 2 — consome fonte única + framing honesto + helper `reportSpendSummary`. `cb84256`+`e42ba10`.
-- Task 3 — `src/lib/auth/report-access.ts` `hasReportAccess` (+test), 4 cópias substituídas. `0fb0bb6`.
-- Task 4 — `src/lib/reports/reportTemplate.ts` (`reportWatermark`, `resolveHeadingFont`, `ReportVariant`) +test. `8d29692`.
-- Task 5 — reescrita `SimulationReportDocument.tsx` (template fru-fru + variant + CNAE pendente). `30f160d` + `530d534` (fix robustez fonte).
+- Task 2 — fonte única + framing honesto + helper `reportSpendSummary`. `cb84256`+`e42ba10`.
+- Task 3 — `src/lib/auth/report-access.ts` `hasReportAccess` (+test), 4 cópias. `0fb0bb6`.
+- Task 4 — `src/lib/reports/reportTemplate.ts` (+test). `8d29692`.
+- Task 5 — reescrita `SimulationReportDocument.tsx` (fru-fru + variant + CNAE pendente). `30f160d`+`530d534`.
+- Task 6 — ambas as rotas usam o componente único; **IA do premium APOSENTADA por decisão de produto** (premium == PDF padrão; removido `generateAiAnalysis`/Anthropic). `ac86a1b`+`11c634c`+`9956aa3`.
 
-**Restantes (na ordem, texto completo nas seções Task 6–8 acima):** Task 6 (consolidar geradores nas rotas), Task 7 (preview travado + CTA + `.env`), Task 8 (script de amostra; depois review final do conjunto + `finishing-a-development-branch`).
+**Restantes (texto completo nas seções acima):** Task 7 (preview travado `?preview=1` + CTA R$ 9,90 + nota `.env`), Task 8 (script de amostra; depois review final do conjunto + `finishing-a-development-branch`).
 
 **Gotchas aprendidas (aplicar na retomada):**
-1. Subagentes filaram 3 relatórios "DONE" FALSOS neste run → SEMPRE verificar spec+qualidade independentes lendo código/git e re-rodando; nunca confiar no report. Checar `git status --porcelain` após cada commit.
+1. Subagentes filaram **4 relatórios imprecisos/FALSOS** neste run → SEMPRE verificar spec+qualidade independentes lendo código/git e re-rodando; nunca confiar no report. Checar `git status --porcelain` após cada commit.
 2. Nº de linha do plano DESATUALIZADOS → localizar alvos por CONTEÚDO.
-3. Ler via `git show <sha>:<arquivo>` ou caminho ABSOLUTO do worktree (`Read` com `src/...` resolve no checkout principal).
-4. `dashboard/relatorio/page.tsx` importa `reportSpendSummary` de `@/constants/pricing` (Task 2) — Task 7 mexe nessa página.
+3. Ler via `git show <sha>:<arquivo>` ou caminho ABSOLUTO do worktree.
+4. `dashboard/relatorio/page.tsx` importa `reportSpendSummary` de `@/constants/pricing` (Task 2). Task 7 mexe em `src/app/relatorio/page.tsx` (não a do dashboard).
 5. Cada commit deve compilar standalone e ser atômico.
-6. **Fonte:** a URL gstatic do plano (Task 5 Step 1) está MORTA (404, v16→v22). A TTF foi bundlada em `src/lib/reports/fonts/SpaceGrotesk.ttf` e embarcada via **data-URL** lida por `fs` no load (sync, sem fetch no render — serverless-safe, guard real → Helvetica). `SimulationReportDocument.tsx` usa `node:fs`/`node:path` → é **server-only**; Task 6/7 NÃO podem importá-lo de componente client (quebraria o bundle). Não reintroduzir URL remota de fonte.
-7. `relatorio-premium/route.ts` mocka `@react-pdf/renderer` no seu teste e (ainda) monta doc inline próprio — Task 6 troca isso pelo componente único.
+6. **Fonte:** URL gstatic do plano (Task 5) MORTA → TTF bundlada `src/lib/reports/fonts/SpaceGrotesk.ttf`, data-URL lida por `fs` no load. `SimulationReportDocument.tsx` é **server-only** (`node:fs`) — NÃO importar de componente client. Não reintroduzir URL remota.
+7. Task 6 FEITA: `relatorio-premium/route.ts` já usa o componente; seu teste mocka `@react-pdf/renderer` E `@/lib/reports/SimulationReportDocument`.
+8. **Baseline suíte = 202, não 203.** Task 6 removeu de propósito o teste obsoleto "503 quando Anthropic não configurado" (IA aposentada). 202/0 É o estado limpo; não tratar a queda de 1 como regressão.
+9. Task 7: verificar o MÉTODO HTTP de `relatorio/gerar/route.ts` antes do `<iframe src=...preview=1>` — iframe faz GET; se a rota for POST-only o preview-embed não funciona como está e precisa adaptação (reportar, não chutar).
 
 **Pendência do dono (fora do código, bloqueia cobrança real):** criar Stripe Price de 990 BRL e setar `STRIPE_PRICE_REPORT_ID`. Task 7 Step 3 documenta no `.env.example`.
 
-**Como retomar:** sessão nova → ler este plano (incl. este RESUME) → `superpowers:subagent-driven-development` a partir da **Task 6**, worktree acima.
+**Como retomar:** sessão nova → ler este plano (incl. este RESUME) → `superpowers:subagent-driven-development` a partir da **Task 7**, worktree acima.
