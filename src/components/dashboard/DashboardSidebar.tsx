@@ -3,6 +3,7 @@
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { logoutAction } from '@/app/auth/logout/action'
+import { BrandMark } from '@/components/brand/BrandMark'
 
 interface NavItem {
   href: string
@@ -55,11 +56,7 @@ export function DashboardSidebar({ isAdmin = false }: DashboardSidebarProps) {
       <div className="db-sidebar-inner">
         {/* Logo mark */}
         <Link href="/?from=dashboard" className="db-sidebar-logo" aria-label="Início">
-          <div style={{ width: 32, height: 32, background: 'var(--lime)', borderRadius: 8, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--ink-on-accent)" strokeWidth="2.5">
-              <path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/>
-            </svg>
-          </div>
+          <BrandMark size={32} />
           <span className="db-nav-label" style={{ fontWeight: 800, fontSize: 15, letterSpacing: '-0.02em' }}>
             Simula<span style={{ color: 'var(--lime)' }}>MEI</span>
           </span>

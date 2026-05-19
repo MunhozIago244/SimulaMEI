@@ -11,7 +11,6 @@
 }
 
 .auth-logo { display: inline-flex; align-items: center; gap: 9px; margin-bottom: 40px; }
-.auth-logo-mark { width: 29px; height: 29px; background: var(--lime); border-radius: 7px; display: inline-flex; align-items: center; justify-content: center; box-shadow: 0 8px 26px rgba(200,241,53,0.13); }
 .auth-logo-text { color: var(--text1); font-size: 18px; font-weight: 850; }
 .auth-logo-text span { color: var(--lime); }
 

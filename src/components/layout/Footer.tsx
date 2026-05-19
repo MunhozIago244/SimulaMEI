@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import { TAX_RULE_VERSION } from '@/lib/tributario'
 import { SITE_NAME, getLegalIdentity } from '@/constants/site'
+import { BrandMark } from '@/components/brand/BrandMark'
 
 const FOOTER_COLUMNS: Array<{ title: string; links: Array<{ label: string; href: string }> }> = [
   {
@@ -55,14 +56,7 @@ export function Footer() {
           {/* Brand */}
           <div>
             <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 12 }}>
-              <div style={{
-                width: 24, height: 24, background: 'var(--lime)',
-                borderRadius: 5, display: 'flex', alignItems: 'center', justifyContent: 'center',
-              }}>
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--ink-on-accent)" strokeWidth="3">
-                  <path d="M12 2L2 7l10 5 10-5-10-5z"/>
-                </svg>
-              </div>
+              <BrandMark size={24} />
               <span style={{ fontWeight: 800, fontSize: 16, letterSpacing: '-0.02em' }}>
                 Simula<span style={{ color: 'var(--lime)' }}>MEI</span>
               </span>

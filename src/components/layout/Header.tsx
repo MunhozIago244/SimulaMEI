@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef } from 'react'
 import Link from 'next/link'
 import { ThemeToggle } from '@/components/theme/ThemeToggle'
+import { BrandMark } from '@/components/brand/BrandMark'
 
 const NAV_LINKS = [
   { label: 'Início', href: '#inicio', id: 'inicio' },
@@ -72,17 +73,7 @@ export function Header({ user = null }: HeaderProps) {
       }}>
         {/* Logo */}
         <Link href="/" style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-          <div style={{
-            width: 28, height: 28, background: 'var(--lime)',
-            borderRadius: 5, display: 'flex', alignItems: 'center', justifyContent: 'center',
-            flexShrink: 0,
-          }}>
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--ink-on-accent)" strokeWidth="3">
-              <path d="M12 2L2 7l10 5 10-5-10-5z"/>
-              <path d="M2 17l10 5 10-5"/>
-              <path d="M2 12l10 5 10-5"/>
-            </svg>
-          </div>
+          <BrandMark size={28} />
           <span style={{ fontWeight: 800, fontSize: 17, letterSpacing: '-0.03em', color: 'var(--text1)' }}>
             Simula<span style={{ color: 'var(--lime)' }}>MEI</span>
           </span>

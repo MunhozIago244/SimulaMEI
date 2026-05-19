@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import { TAX_RULE_VERSION } from '@/lib/tributario'
+import { BrandMark } from '@/components/brand/BrandMark'
 
 interface StaticPageLayoutProps {
   title: string
@@ -22,14 +23,7 @@ export function StaticPageLayout({ title, subtitle, children }: StaticPageLayout
         display: 'flex', alignItems: 'center', justifyContent: 'space-between',
       }}>
         <Link href="/" style={{ display: 'flex', alignItems: 'center', gap: 8, textDecoration: 'none' }}>
-          <div style={{
-            width: 24, height: 24, background: 'var(--lime)',
-            borderRadius: 5, display: 'flex', alignItems: 'center', justifyContent: 'center',
-          }}>
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--ink-on-accent)" strokeWidth="3">
-              <path d="M12 2L2 7l10 5 10-5-10-5z"/>
-            </svg>
-          </div>
+          <BrandMark size={24} />
           <span style={{ fontWeight: 800, fontSize: 16, letterSpacing: '-0.03em' }}>
             Simula<span style={{ color: 'var(--lime)' }}>MEI</span>
           </span>

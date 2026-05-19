@@ -1,14 +1,11 @@
 import Link from 'next/link'
 import type { ReactNode } from 'react'
+import { BrandMark } from '@/components/brand/BrandMark'
 
 export function AuthLogo() {
   return (
     <Link href="/" className="auth-logo" aria-label="Voltar para o SimulaMEI">
-      <span className="auth-logo-mark" aria-hidden="true">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--ink-on-accent)" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
-          <path d="M12 2L2 7l10 5 10-5-10-5z" />
-        </svg>
-      </span>
+      <BrandMark size={29} />
       <span className="auth-logo-text">
         Simula<span>MEI</span>
       </span>
