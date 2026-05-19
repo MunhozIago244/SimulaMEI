@@ -12,15 +12,6 @@ interface SimulationRow {
   resultado: ResultadoSimulacao
 }
 
-interface ProfileRow {
-  nome: string | null
-  nome_negocio: string | null
-  cnae_principal: string | null
-  tipo_mei: string | null
-  atividades_realizadas: string | null
-  plano: string | null
-}
-
 export async function POST(request: NextRequest) {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
@@ -37,7 +28,7 @@ export async function POST(request: NextRequest) {
   const [{ data: profile }, { data: purchases }, { data: simulations }] = await Promise.all([
     supabase
       .from('user_profiles')
-      .select('nome,nome_negocio,cnae_principal,tipo_mei,atividades_realizadas,plano')
+      .select('plano')
       .eq('id', user.id)
       .maybeSingle(),
     supabase
