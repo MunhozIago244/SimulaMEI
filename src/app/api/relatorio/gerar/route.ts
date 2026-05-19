@@ -14,6 +14,14 @@ interface SimulationRow {
   resultado: ResultadoSimulacao
 }
 
+interface PurchaseRow {
+  user_id: string
+  status: string
+  produto: string
+  report_fingerprint: string | null
+  simulation_id: string | null
+}
+
 export async function GET(req: Request) {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
@@ -29,15 +37,24 @@ export async function GET(req: Request) {
       .from('purchases')
       .select('user_id, status, produto, report_fingerprint, simulation_id')
       .eq('id', purchaseId)
-      .maybeSingle()
+      .maybeSingle() as { data: PurchaseRow | null }
+    // 404 vs 403: distinguir "não existe" de "não é seu" tecnicamente vaza
+    // se uma purchase id existe — mas IDs são UUIDv4 (128 bits), não
+    // enumeráveis nem expostos publicamente. Risco prático ≈ 0; mantém as
+    // duas mensagens distintas para melhor UX/log.
     if (!pur) return NextResponse.json({ error: 'Compra não encontrada.' }, { status: 404 })
-    if ((pur as { user_id: string }).user_id !== user.id)
+    if (pur.user_id !== user.id)
       return NextResponse.json({ error: 'Compra de outro usuário.' }, { status: 403 })
-    if ((pur as { status: string }).status !== 'paid' || (pur as { produto: string }).produto !== 'relatorio')
+    if (pur.status !== 'paid' || pur.produto !== 'relatorio')
       return NextResponse.json({ error: 'Compra não habilita relatório.' }, { status: 402 })
 
+    // Intencional: este caminho NÃO chama isResultadoVazio. O contrato do
+    // ?purchase= é "você pagou por este conteúdo, baixe quantas vezes quiser"
+    // — a sim original era não-vazia no momento do checkout (Task 3 garante
+    // via 422). O fingerprint pago é imutável; mesmo que o user edite a sim
+    // depois, a regeneração serve o que foi pago.
     let simRow: { resultado: ResultadoSimulacao } | undefined
-    const simId = (pur as { simulation_id: string | null }).simulation_id
+    const simId = pur.simulation_id
     if (simId) {
       const { data } = await supabase
         .from('simulations')
@@ -48,7 +65,7 @@ export async function GET(req: Request) {
       if (data) simRow = data as { resultado: ResultadoSimulacao }
     }
     if (!simRow) {
-      const fp = (pur as { report_fingerprint: string | null }).report_fingerprint
+      const fp = pur.report_fingerprint
       if (fp) {
         const { data: cands } = await supabase
           .from('simulations')

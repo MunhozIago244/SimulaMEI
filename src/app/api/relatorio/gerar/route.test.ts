@@ -164,6 +164,7 @@ describe('/api/relatorio/gerar GET', () => {
         simulationById: {
           's1': { resultado: makeResultado() },
         },
+        simulations: [{ resultado: { ...makeResultado(), entrada: { ...makeResultado().entrada, cnae: '9999-9/99' } } }],
       }))
 
       const response = await GET(makeRequest('purchase=p1'))
@@ -174,6 +175,8 @@ describe('/api/relatorio/gerar GET', () => {
         'attachment; filename="simulamei-relatorio.pdf"',
       )
       expect(renderToBufferMock).toHaveBeenCalled()
+      const renderedResultado = (renderToBufferMock.mock.calls[0][0] as { props: { resultado: { entrada: { cnae: string } } } }).props.resultado
+      expect(renderedResultado.entrada.cnae).toBe('6204-0/00')
     })
 
     it('falls back to fingerprint match when pinned sim is missing', async () => {
