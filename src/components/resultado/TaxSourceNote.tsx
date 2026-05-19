@@ -96,6 +96,10 @@ export function TaxSourceNote({
           ))}
         </span>
       )}
+      {' · '}
+      <a href="/metodologia" style={{ color: 'var(--blue)' }}>
+        Metodologia
+      </a>
     </div>
   )
 }

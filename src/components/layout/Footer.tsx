@@ -8,6 +8,7 @@ const FOOTER_COLUMNS: Array<{ title: string; links: Array<{ label: string; href:
     links: [
       { label: 'Simulador', href: '/#simulador' },
       { label: 'Como calcula', href: '/#como-calcula' },
+      { label: 'Metodologia', href: '/metodologia' },
       { label: 'Para contadores', href: '/para-contadores' },
       { label: 'API', href: '/api-docs' },
     ],
