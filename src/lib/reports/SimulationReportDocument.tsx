@@ -1,3 +1,5 @@
+import { readFileSync } from 'node:fs'
+import path from 'node:path'
 import React from 'react'
 import { Document, Page, StyleSheet, Text, View, Font } from '@react-pdf/renderer'
 import type { ResultadoSimulacao } from '@/types/tributario'
@@ -10,12 +12,14 @@ import { usoTetoPercent } from '@/components/simulador/usoTeto'
 import { getLegalIdentity } from '@/constants/site'
 import { reportWatermark, resolveHeadingFont, type ReportVariant } from './reportTemplate'
 
+// Lê a TTF bundlada de forma síncrona no load e registra como data URL:
+// @react-pdf decodifica o base64 em memória (fontkit.create), sem fetch nem
+// fs no render → serverless-safe. Se o arquivo faltar, readFileSync lança
+// de forma síncrona → catch → guard real (Helvetica).
 let REGISTER_OK = false
 try {
-  Font.register({
-    family: 'SpaceGrotesk',
-    src: 'https://fonts.gstatic.com/s/spacegrotesk/v16/V8mQoQDjQSkFtoMM3T6r8E7mF71Q-gOoraIAEj62UXskPMBBSSJLm2E.ttf',
-  })
+  const ttf = readFileSync(path.join(process.cwd(), 'src/lib/reports/fonts/SpaceGrotesk.ttf'))
+  Font.register({ family: 'SpaceGrotesk', src: `data:font/ttf;base64,${ttf.toString('base64')}` })
   REGISTER_OK = true
 } catch {
   REGISTER_OK = false
