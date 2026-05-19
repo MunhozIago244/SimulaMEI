@@ -12,14 +12,16 @@ const PUBLIC_PAGES = [
   { path: '/para-contadores', changeFrequency: 'weekly' as const, priority: 0.8 },
   { path: '/aprenda', changeFrequency: 'weekly' as const, priority: 0.8 },
   { path: '/api-docs', changeFrequency: 'monthly' as const, priority: 0.7 },
-  { path: '/privacidade', changeFrequency: 'yearly' as const, priority: 0.5 },
-  { path: '/termos', changeFrequency: 'yearly' as const, priority: 0.5 },
+  { path: '/metodologia', changeFrequency: 'monthly' as const, priority: 0.6 },
+  // /privacidade e /termos removidas: marcadas noindex (sinal de sitemap seria contraditório)
 ]
 
 const LEARNING_PAGES = [
   { path: '/aprenda/fator-r', changeFrequency: 'monthly' as const, priority: 0.75 },
   { path: '/aprenda/quando-sair-do-mei', changeFrequency: 'monthly' as const, priority: 0.75 },
   { path: '/aprenda/diferenca-anexo-iii-e-v', changeFrequency: 'monthly' as const, priority: 0.75 },
+  { path: '/aprenda/limite-mei-2026', changeFrequency: 'monthly' as const, priority: 0.75 },
+  { path: '/aprenda/mei-estourou-o-teto', changeFrequency: 'monthly' as const, priority: 0.75 },
 ]
 
 export default function sitemap(): MetadataRoute.Sitemap {

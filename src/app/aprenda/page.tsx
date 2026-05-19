@@ -49,6 +49,22 @@ const ARTIGOS = [
     tempo: '4 min',
     accent: 'var(--orange)',
   },
+  {
+    href: '/aprenda/limite-mei-2026',
+    titulo: 'Limite do MEI em 2026: quanto posso faturar',
+    desc: 'Teto comum e do caminhoneiro, limite proporcional no ano de abertura, tolerância de 20% e por que a projeção pesa mais que o acumulado.',
+    tag: 'MEI · Teto 2026',
+    tempo: '4 min',
+    accent: 'var(--lime)',
+  },
+  {
+    href: '/aprenda/mei-estourou-o-teto',
+    titulo: 'MEI estourou o teto: o que fazer agora',
+    desc: 'Os dois cenários (até 20% e acima de 20%), o risco de tributação retroativa e os passos para migrar sem multa evitável.',
+    tag: 'MEI · Desenquadramento',
+    tempo: '5 min',
+    accent: 'var(--yellow)',
+  },
 ]
 
 export default function AprendaPage() {
