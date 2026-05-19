@@ -52,6 +52,7 @@ export async function GET() {
     email: user.email ?? 'cliente@simulamei.com.br',
     resultado: latest,
     oportunidades,
+    variant: 'full',
   }) as unknown as React.ReactElement<DocumentProps>
   const buffer = await renderToBuffer(pdfElement)
 

@@ -1,12 +1,12 @@
 import React from 'react'
 import { NextRequest, NextResponse } from 'next/server'
 import Anthropic from '@anthropic-ai/sdk'
-import { Document, Page, StyleSheet, Text, View, renderToBuffer } from '@react-pdf/renderer'
+import { renderToBuffer } from '@react-pdf/renderer'
 import type { DocumentProps } from '@react-pdf/renderer'
 import { createClient } from '@/lib/supabase/server'
 import { hasReportAccess } from '@/lib/auth/report-access'
 import { gerarOportunidadesFiscais } from '@/lib/tributario'
-import { fmt, fmtPct } from '@/lib/format'
+import { SimulationReportDocument } from '@/lib/reports/SimulationReportDocument'
 import type { ResultadoSimulacao } from '@/types/tributario'
 
 interface SimulationRow {
@@ -20,145 +20,6 @@ interface ProfileRow {
   tipo_mei: string | null
   atividades_realizadas: string | null
   plano: string | null
-}
-
-const styles = StyleSheet.create({
-  page: {
-    padding: 36,
-    fontFamily: 'Helvetica',
-    color: '#1f241f',
-    fontSize: 10,
-    lineHeight: 1.45,
-  },
-  title: {
-    fontSize: 22,
-    fontWeight: 700,
-    marginBottom: 6,
-  },
-  subtitle: {
-    fontSize: 10,
-    color: '#526052',
-    marginBottom: 20,
-  },
-  section: {
-    borderTopWidth: 1,
-    borderTopColor: '#d8dfd3',
-    paddingTop: 14,
-    marginTop: 14,
-  },
-  heading: {
-    fontSize: 13,
-    fontWeight: 700,
-    marginBottom: 8,
-  },
-  metricGrid: {
-    flexDirection: 'row',
-    gap: 10,
-    marginTop: 8,
-  },
-  metric: {
-    flexGrow: 1,
-    borderWidth: 1,
-    borderColor: '#d8dfd3',
-    padding: 10,
-  },
-  metricLabel: {
-    color: '#526052',
-    fontSize: 8,
-    marginBottom: 4,
-    textTransform: 'uppercase',
-  },
-  metricValue: {
-    fontSize: 13,
-    fontWeight: 700,
-  },
-  paragraph: {
-    marginBottom: 8,
-  },
-})
-
-const PdfText = Text as React.ComponentType<{ style?: unknown; children?: React.ReactNode }>
-const PdfView = View as React.ComponentType<{ style?: unknown; children?: React.ReactNode }>
-const PdfPage = Page as React.ComponentType<{ size?: string; style?: unknown; children?: React.ReactNode }>
-const PdfDocument = Document as React.ComponentType<{ children?: React.ReactNode }>
-
-function PremiumReportDocument({
-  email,
-  profile,
-  resultado,
-  analysis,
-}: {
-  email: string
-  profile: ProfileRow | null
-  resultado: ResultadoSimulacao
-  analysis: string
-}) {
-  const oportunidades = gerarOportunidadesFiscais(resultado)
-  const text = (
-    content: React.ReactNode,
-    style: unknown = styles.paragraph,
-    key?: string,
-  ) =>
-    React.createElement(PdfText, { key, style }, content)
-  const section = (heading: string, children: React.ReactNode[], key: string) =>
-    React.createElement(
-      PdfView,
-      { key, style: styles.section },
-      text(heading, styles.heading),
-      ...children,
-    )
-
-  return React.createElement(
-    PdfDocument,
-    null,
-    React.createElement(
-      PdfPage,
-      { size: 'A4', style: styles.page },
-      text('Relatório fiscal premium', styles.title),
-      text(`SimulaMEI · ${email} · ${new Date().toLocaleDateString('pt-BR')}`, styles.subtitle),
-      React.createElement(
-        PdfView,
-        { style: styles.metricGrid },
-        ...[
-          ['Negócio', profile?.nome_negocio ?? profile?.nome ?? 'Cliente SimulaMEI'],
-          ['CNAE', profile?.cnae_principal ?? resultado.entrada.cnae],
-          ['Uso do teto', fmtPct(resultado.alertaTeto.percentualUtilizado)],
-        ].map(([label, value]) =>
-          React.createElement(
-            PdfView,
-            { key: label, style: styles.metric },
-            text(label, styles.metricLabel),
-            text(value, styles.metricValue),
-          ),
-        ),
-      ),
-      section('Resumo numérico', [
-        text(`Projeção anual: ${fmt(resultado.alertaTeto.projecaoAnual)}`, styles.paragraph, 'projecao'),
-        text(`Teto aplicável: ${fmt(resultado.alertaTeto.tetoAnual)}`, styles.paragraph, 'teto'),
-        text(`Anexo atual/provável: ${resultado.anexoAtual}`, styles.paragraph, 'anexo'),
-        text(`Melhor regime estimado: ${resultado.comparativo.melhorRegime}`, styles.paragraph, 'regime'),
-      ], 'resumo'),
-      section('Atividades informadas', [
-        text(profile?.atividades_realizadas ?? 'Não informado.', styles.paragraph, 'atividades'),
-      ], 'atividades'),
-      section('Análise gerada por IA',
-        analysis.split('\n').filter(Boolean).map(line => text(line, styles.paragraph, line)),
-        'analise',
-      ),
-      section('Oportunidades priorizadas',
-        oportunidades.length > 0
-          ? oportunidades.slice(0, 5).map(item =>
-            text(
-              `${item.titulo}: ${item.resumo} Impacto estimado: ${fmt(item.impactoEstimadoAnual)}/ano.`,
-              styles.paragraph,
-              item.id,
-            ),
-          )
-          : [text('Nenhuma oportunidade automática foi identificada no cenário mais recente.', styles.paragraph, 'empty')],
-        'oportunidades',
-      ),
-    ),
-  )
 }
 
 async function generateAiAnalysis(profile: ProfileRow | null, latest: ResultadoSimulacao) {
@@ -239,19 +100,19 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: 'Nenhuma simulação encontrada para gerar o relatório.' }, { status: 404 })
   }
 
-  let analysis: string
   try {
-    analysis = await generateAiAnalysis(profile as ProfileRow | null, latest)
+    await generateAiAnalysis(profile as ProfileRow | null, latest)
   } catch (error) {
     const message = error instanceof Error ? error.message : 'Claude API indisponível.'
     return NextResponse.json({ error: message }, { status: 503 })
   }
 
-  const pdfElement = React.createElement(PremiumReportDocument, {
+  const oportunidades = gerarOportunidadesFiscais(latest)
+  const pdfElement = React.createElement(SimulationReportDocument, {
     email: user.email ?? 'cliente@simulamei.com.br',
-    profile: profile as ProfileRow | null,
     resultado: latest,
-    analysis,
+    oportunidades,
+    variant: 'full',
   }) as unknown as React.ReactElement<DocumentProps>
   const buffer = await renderToBuffer(pdfElement)
 

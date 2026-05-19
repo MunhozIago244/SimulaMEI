@@ -40,6 +40,10 @@ vi.mock('@/lib/tributario', () => ({
   gerarOportunidadesFiscais: gerarOportunidadesFiscaisMock,
 }))
 
+vi.mock('@/lib/reports/SimulationReportDocument', () => ({
+  SimulationReportDocument: vi.fn(() => null),
+}))
+
 import { POST } from './route'
 
 function makeRequest(body: unknown = {}) {
