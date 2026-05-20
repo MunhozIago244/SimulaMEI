@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { getDashboardKPIs } from './kpis'
+import { deriveMesEstourarTeto, getDashboardKPIs } from './kpis'
 import { simular } from '@/lib/tributario'
 import type { MonthlyMonitorSummary } from '@/lib/monitor'
 
@@ -82,5 +82,26 @@ describe('getDashboardKPIs', () => {
     expect(kpis.usoTeto).toBeCloseTo(0.593, 3)
     expect(kpis.tone).toBe('danger')
     expect(kpis.contextSubMessage).toContain('142% do teto')
+  })
+})
+
+describe('deriveMesEstourarTeto', () => {
+  it('projeção abaixo do teto → null', () => {
+    expect(deriveMesEstourarTeto(60_000, 81_000)).toBeNull()
+    expect(deriveMesEstourarTeto(81_000, 81_000)).toBeNull()
+  })
+
+  it('projeção 162k em teto 81k (ritmo dobrado) → mês 6', () => {
+    expect(deriveMesEstourarTeto(162_000, 81_000)).toBe(6)
+  })
+
+  it('projeção 100k em teto 81k → ainda no ano', () => {
+    const m = deriveMesEstourarTeto(100_000, 81_000)
+    expect(m).not.toBeNull()
+    expect(m! >= 1 && m! <= 12).toBe(true)
+  })
+
+  it('projeção zero → null', () => {
+    expect(deriveMesEstourarTeto(0, 81_000)).toBeNull()
   })
 })
