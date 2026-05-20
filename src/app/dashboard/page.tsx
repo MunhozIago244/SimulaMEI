@@ -18,6 +18,7 @@ import { Pill } from '@/components/dashboard/Pill'
 import { DashboardPageHeader } from '@/components/dashboard/DashboardPageHeader'
 import { getDashboardContext } from '@/lib/dashboard/context'
 import { getDashboardKPIs } from '@/lib/dashboard/kpis'
+import { labelAnexoPorRegime } from '@/lib/dashboard/labels'
 import { fmt, fmtPct } from '@/lib/format'
 import type { ResultadoSimulacao } from '@/types/tributario'
 
@@ -377,7 +378,7 @@ export default async function DashboardPage() {
                   </span>
                   <span style={{ fontSize: 11, color: 'var(--text3)' }}>
                     {kpis.fatorRAtual > 0
-                      ? (kpis.fatorRAtual >= 0.28 ? 'Anexo III ✓' : 'abaixo de 28%')
+                      ? `${labelAnexoPorRegime('mei', kpis.fatorRAtual >= 0.28 ? 'III' : 'V')} · ${kpis.fatorRAtual >= 0.28 ? 'FR ≥ 28% ✓' : 'FR < 28%'}`
                       : 'sem folha lançada'}
                   </span>
                 </Panel>
