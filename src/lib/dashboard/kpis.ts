@@ -124,6 +124,11 @@ function buildContextFromMonitor(
   const projecaoPct = Math.round((summary.projecaoAnual / tetoAnual) * 100)
   const monthCount = formatMonthCount(monthsOfHistory)
 
+  // P0 (RN-fiscal): a árvore ramifica primeiro por SINAL DE RISCO mais forte
+  // (estouro real, projeção crítica, projeção acima do teto) antes de cair
+  // em branches "saudáveis" que olham só o acumulado. Sem isso, um usuário
+  // com 30% de uso atual mas projeção 150% via "margem confortável" no card
+  // contradizia o headline crítico.
   if (usoTeto > 1) {
     return {
       message: `Teto estourado em ${pct - 100}%`,
@@ -161,6 +166,16 @@ function buildContextFromMonitor(
     return {
       message: `Primeiro mês lançado`,
       sub: `Você usou ${pct}% do teto neste mês. Continue lançando todo início de mês para ativar as projeções e alertas dinâmicos.`,
+    }
+  }
+  // Default "margem confortável" — só alcançável quando usoTeto ≤ 0.5,
+  // projecaoUso ≤ 0.85 e há ≥ 2 meses de histórico. A guarda explícita abaixo
+  // é defensiva: se algum branch acima for relaxado no futuro, este return
+  // continua coerente com o estado real.
+  if (projecaoUso > 0.85) {
+    return {
+      message: `Projeção em ${projecaoPct}% do teto`,
+      sub: `Acumulado em ${pct}%, mas projeção de ${monthCount} indica ${projecaoPct}% até dezembro. Acompanhe de perto.`,
     }
   }
   return {

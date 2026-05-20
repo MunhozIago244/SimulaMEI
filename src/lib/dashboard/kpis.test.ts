@@ -84,3 +84,47 @@ describe('getDashboardKPIs', () => {
     expect(kpis.contextSubMessage).toContain('142% do teto')
   })
 })
+
+describe('getDashboardKPIs — "margem confortável" só quando projeção também confortável', () => {
+  // BUG: usuário com uso atual baixo (30%) mas projeção que estoura o teto (150%)
+  // recebia "margem confortável" no card, contradizendo o headline crítico do
+  // alerta no topo. A árvore precisa ramificar por projeção PRIMEIRO.
+  it('NÃO diz "confortável" quando projeção excede o teto, mesmo com uso atual baixo', () => {
+    const kpis = getDashboardKPIs({
+      monitorSummary: makeMonitorSummary({
+        faturamentoAcumulado: 24_300, // 30% do teto (R$ 81k)
+        projecaoAnual: 121_500,        // 150% do teto → estouro projetado
+      }),
+      monthlyInputsCount: 3,
+      latestMonth: 5,
+      latestYear: 2026,
+      tipoMei: 'geral',
+      plan: 'pro',
+      freeLimitReached: false,
+      refDate,
+    })
+
+    const fullText = (kpis.contextMessage + ' ' + kpis.contextSubMessage).toLowerCase()
+    expect(fullText).not.toContain('confortável')
+    expect(fullText).toMatch(/projeç|excede|estouro/i)
+  })
+
+  it('mantém "margem confortável" quando ambos uso atual E projeção estão baixos', () => {
+    const kpis = getDashboardKPIs({
+      monitorSummary: makeMonitorSummary({
+        faturamentoAcumulado: 24_300, // 30% do teto
+        projecaoAnual: 32_400,         // 40% do teto → projeção confortável
+      }),
+      monthlyInputsCount: 3,
+      latestMonth: 5,
+      latestYear: 2026,
+      tipoMei: 'geral',
+      plan: 'pro',
+      freeLimitReached: false,
+      refDate,
+    })
+
+    const fullText = (kpis.contextMessage + ' ' + kpis.contextSubMessage).toLowerCase()
+    expect(fullText).toContain('confortável')
+  })
+})

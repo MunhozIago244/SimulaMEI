@@ -141,6 +141,8 @@ interface FiscalCalendarInput {
   elegivelFatorR: boolean;
   /** Uso atual do teto (0–1+); >1 significa estouro */
   usoTeto?: number;
+  /** Projeção anual / teto (0–1+); >1 indica que o ritmo atual estoura o teto até dezembro */
+  projecaoUso?: number;
   /** Fator R calculado pelos últimos 12 meses */
   fatorRAtual?: number;
   /** Faturamento mensal médio dos últimos lançamentos */
@@ -210,6 +212,7 @@ export function getFiscalCalendarItems(input: FiscalCalendarInput): FiscalCalend
     anexoAtual,
     elegivelFatorR,
     usoTeto = 0,
+    projecaoUso = usoTeto,
     fatorRAtual = 0,
     faturamentoMedio = 0,
     ultimoLancamentoMes = null,
@@ -304,12 +307,18 @@ export function getFiscalCalendarItems(input: FiscalCalendarInput): FiscalCalend
       severity: "atencao",
     });
   } else if (usoTeto > 0.5) {
+    // P0 (RN-fiscal): "margem confortável" só faz sentido se a projeção
+    // anual também estiver abaixo do teto. Se o ritmo atual projeta estouro,
+    // a frase contradizia o alerta principal do dashboard.
+    const projecaoExcedeTeto = projecaoUso > 1;
     items.push({
       title: `Meio do caminho: ${Math.round(usoTeto * 100)}% do teto`,
-      body: `${nome || "Você"} está em ${Math.round(usoTeto * 100)}% do teto. Continue acompanhando mensalmente — ainda há margem confortável.`,
+      body: projecaoExcedeTeto
+        ? `${nome || "Você"} está em ${Math.round(usoTeto * 100)}% do teto, mas a projeção anual indica ${Math.round(projecaoUso * 100)}% — risco de estouro. Reavalie o ritmo ou planeje migração com contador.`
+        : `${nome || "Você"} está em ${Math.round(usoTeto * 100)}% do teto. Continue acompanhando mensalmente — ainda há margem confortável.`,
       channel: "dashboard",
-      priority: "baixa",
-      severity: "info",
+      priority: projecaoExcedeTeto ? "media" : "baixa",
+      severity: projecaoExcedeTeto ? "atencao" : "info",
     });
   }
 

@@ -83,6 +83,45 @@ describe('getFiscalCalendarItems', () => {
     expect(items.some(item => item.title.includes('Comece pelo primeiro lançamento'))).toBe(true)
   })
 
+  // P0: "margem confortável" emitida quando uso atual > 50% mas projeção
+  // estoura o teto contradizia o headline crítico do dashboard.
+  // Solução: aceitar `projecaoUso` opcional e gatear a frase por ela.
+  it('NÃO emite "margem confortável" quando projeção excede o teto, mesmo com uso atual entre 50% e 85%', () => {
+    const items = getFiscalCalendarItems({
+      refDate: new Date(2026, 6, 10),
+      nome: 'Ana',
+      tipoMei: 'geral' satisfies TipoMei,
+      anexoAtual: 'III',
+      elegivelFatorR: false,
+      usoTeto: 0.55,    // mid-way mas confortável se olhar só pra acumulado
+      projecaoUso: 1.5, // projeção estoura o teto em 50%
+      faturamentoMedio: 10_000,
+      totalLancamentos: 5,
+    })
+
+    const tetoItem = items.find(item => item.title.includes('teto'))
+    expect(tetoItem).toBeDefined()
+    expect(tetoItem!.body.toLowerCase()).not.toContain('margem confortável')
+  })
+
+  it('mantém "margem confortável" quando projeção também está abaixo do teto', () => {
+    const items = getFiscalCalendarItems({
+      refDate: new Date(2026, 6, 10),
+      nome: 'Ana',
+      tipoMei: 'geral' satisfies TipoMei,
+      anexoAtual: 'III',
+      elegivelFatorR: false,
+      usoTeto: 0.55,
+      projecaoUso: 0.70, // projeção também confortável
+      faturamentoMedio: 10_000,
+      totalLancamentos: 5,
+    })
+
+    const tetoItem = items.find(item => item.title.includes('Meio do caminho'))
+    expect(tetoItem).toBeDefined()
+    expect(tetoItem!.body).toContain('margem confortável')
+  })
+
   // Res. CGSN 140/2018 art. 25-A: CNAE elegível Fator R + FR<28% → Anexo V (não III).
   // Mesmo que o upstream passe anexoAtual='III' (anexoPadrão do CNAE), o título
   // deve refletir o anexo EFETIVO no branch FR<28%, que por lei é V.
