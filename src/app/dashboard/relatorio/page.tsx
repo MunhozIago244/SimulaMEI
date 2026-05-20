@@ -173,44 +173,9 @@ export default async function DashboardRelatorioPage() {
             <ProUpsellCompact totalReportsPaid={totalReportsPaid} moneySpentLabel={moneySpentLabel} monthsEquivalent={monthsOfProEquivalent} />
           )}
 
-          {/* Histórico de relatórios pagos com re-download 1-clique */}
-          {showPaidList && paidItems.length > 0 && (
-            <section style={{ marginTop: 16 }}>
-              <Panel style={{ padding: 22 }}>
-                <h3 style={{ fontSize: 14, fontWeight: 800, margin: '0 0 12px', color: 'var(--text1)' }}>
-                  Meus relatórios pagos
-                </h3>
-                <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: 10 }}>
-                  {paidItems.map(item => {
-                    const dateStr = new Date(item.createdAt).toLocaleDateString('pt-BR', { timeZone: 'America/Sao_Paulo' })
-                    const label = item.resolved
-                      ? `CNAE ${item.cnae ?? '—'} · ${item.faturamento != null ? `R$ ${item.faturamento.toLocaleString('pt-BR')}` : '—'} · ${dateStr}`
-                      : `Relatório pago em ${dateStr}`
-                    return (
-                      <li key={item.id} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12, padding: '10px 12px', background: 'var(--bg2)', borderRadius: 'var(--radius)' }}>
-                        <div style={{ fontSize: 13, color: 'var(--text2)', overflow: 'hidden', textOverflow: 'ellipsis' }}>
-                          {label}
-                        </div>
-                        {item.resolved ? (
-                          <a
-                            href={`/api/relatorio/gerar?purchase=${item.id}`}
-                            download
-                            style={{ fontSize: 12, fontWeight: 700, color: 'var(--ink-on-accent)', background: 'var(--lime)', padding: '6px 12px', borderRadius: 'var(--radius)', textDecoration: 'none', whiteSpace: 'nowrap' }}
-                          >
-                            Baixar PDF
-                          </a>
-                        ) : (
-                          <span style={{ fontSize: 11, color: 'var(--text3)', fontStyle: 'italic' }}>
-                            Indisponível — refaça a simulação com os mesmos dados
-                          </span>
-                        )}
-                      </li>
-                    )
-                  })}
-                </ul>
-              </Panel>
-            </section>
-          )}
+          {/* "Meus relatórios pagos" foi movida pra fora do ternary — renderiza
+              também no paywall (quando o user roda nova sim e perde hasAccess
+              da atual mas ainda tem relatórios pagos antigos pra rebaixar). */}
         </section>
       ) : (
         /* Sem acesso: oferece avulso E Pro lado a lado, Pro destacado */
@@ -259,6 +224,14 @@ export default async function DashboardRelatorioPage() {
             >
               Comprar relatório avulso
             </CheckoutButton>
+            {showPaidList && paidItems.length > 0 && (
+              <a
+                href="#meus-relatorios-pagos"
+                style={{ marginTop: 12, fontSize: 12, color: 'var(--text3)', textAlign: 'center', textDecoration: 'underline' }}
+              >
+                ↓ Já comprou outros? Veja seus relatórios pagos
+              </a>
+            )}
           </Panel>
 
           {/* Pro plan - destacado */}
@@ -340,6 +313,47 @@ export default async function DashboardRelatorioPage() {
             <p style={{ fontSize: 10, color: 'var(--text3)', textAlign: 'center', margin: '8px 0 0' }}>
               Cancele quando quiser · Sem fidelidade · 7 dias de garantia (CDC art. 49)
             </p>
+          </Panel>
+        </section>
+      )}
+
+      {/* Lista de relatórios pagos — visível tanto com hasAccess quanto no
+          paywall, pra usuário re-baixar relatórios já comprados quando rodar
+          uma nova simulação. Linkada do painel avulsa via âncora #meus-pagos. */}
+      {showPaidList && paidItems.length > 0 && (
+        <section id="meus-relatorios-pagos" style={{ marginTop: 16 }}>
+          <Panel style={{ padding: 22 }}>
+            <h3 style={{ fontSize: 14, fontWeight: 800, margin: '0 0 12px', color: 'var(--text1)' }}>
+              Meus relatórios pagos
+            </h3>
+            <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: 10 }}>
+              {paidItems.map(item => {
+                const dateStr = new Date(item.createdAt).toLocaleDateString('pt-BR', { timeZone: 'America/Sao_Paulo' })
+                const label = item.resolved
+                  ? `CNAE ${item.cnae ?? '—'} · ${item.faturamento != null ? `R$ ${item.faturamento.toLocaleString('pt-BR')}` : '—'} · ${dateStr}`
+                  : `Relatório pago em ${dateStr}`
+                return (
+                  <li key={item.id} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12, padding: '10px 12px', background: 'var(--bg2)', borderRadius: 'var(--radius)' }}>
+                    <div style={{ fontSize: 13, color: 'var(--text2)', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                      {label}
+                    </div>
+                    {item.resolved ? (
+                      <a
+                        href={`/api/relatorio/gerar?purchase=${item.id}`}
+                        download
+                        style={{ fontSize: 12, fontWeight: 700, color: 'var(--ink-on-accent)', background: 'var(--lime)', padding: '6px 12px', borderRadius: 'var(--radius)', textDecoration: 'none', whiteSpace: 'nowrap' }}
+                      >
+                        Baixar PDF
+                      </a>
+                    ) : (
+                      <span style={{ fontSize: 11, color: 'var(--text3)', fontStyle: 'italic' }}>
+                        Indisponível — refaça a simulação com os mesmos dados
+                      </span>
+                    )}
+                  </li>
+                )
+              })}
+            </ul>
           </Panel>
         </section>
       )}
