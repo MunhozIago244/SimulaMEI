@@ -107,15 +107,6 @@ export function LivePreviewPanel({
                   ? '0 0 8px oklch(82% 0.15 85 / 0.3)'
                   : 'none',
           }} />
-          {pctTeto > 100 && (
-            <div style={{
-              position: 'absolute', top: 0, left: '100%',
-              width: Math.min(pctTeto - 100, 30) + '%', height: '100%',
-              background: 'var(--red)', opacity: 0.45,
-              borderRadius: '0 999px 999px 0',
-              transition: 'width 420ms cubic-bezier(0.16,1,0.3,1)',
-            }} />
-          )}
         </div>
         <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: 6 }}>
           <span style={{ fontSize: 10, fontFamily: 'var(--mono)', color: 'var(--text3)' }}>R$ 0</span>
