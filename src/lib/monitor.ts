@@ -141,6 +141,9 @@ interface FiscalCalendarInput {
   elegivelFatorR: boolean;
   /** Uso atual do teto (0–1+); >1 significa estouro */
   usoTeto?: number;
+  /** Uso projetado do teto até o fim do ano (projecaoAnual/tetoAnual). Quando
+   *  ausente, mensagens fallback usam apenas o uso atual. */
+  projecaoUso?: number;
   /** Fator R calculado pelos últimos 12 meses */
   fatorRAtual?: number;
   /** Faturamento mensal médio dos últimos lançamentos */
@@ -210,6 +213,7 @@ export function getFiscalCalendarItems(input: FiscalCalendarInput): FiscalCalend
     anexoAtual,
     elegivelFatorR,
     usoTeto = 0,
+    projecaoUso,
     fatorRAtual = 0,
     faturamentoMedio = 0,
     ultimoLancamentoMes = null,
@@ -304,12 +308,16 @@ export function getFiscalCalendarItems(input: FiscalCalendarInput): FiscalCalend
       severity: "atencao",
     });
   } else if (usoTeto > 0.5) {
+    const projEstoura = projecaoUso !== undefined && projecaoUso > 1;
+    const body = projEstoura
+      ? `${nome || "Você"} está em ${Math.round(usoTeto * 100)}% do teto, mas a projeção atual indica ${Math.round((projecaoUso ?? 0) * 100)}% até dezembro — risco de excesso. Acompanhe o ritmo dos próximos lançamentos.`
+      : `${nome || "Você"} está em ${Math.round(usoTeto * 100)}% do teto. Continue acompanhando mensalmente — ainda há margem confortável.`;
     items.push({
       title: `Meio do caminho: ${Math.round(usoTeto * 100)}% do teto`,
-      body: `${nome || "Você"} está em ${Math.round(usoTeto * 100)}% do teto. Continue acompanhando mensalmente — ainda há margem confortável.`,
+      body,
       channel: "dashboard",
-      priority: "baixa",
-      severity: "info",
+      priority: projEstoura ? "media" : "baixa",
+      severity: projEstoura ? "atencao" : "info",
     });
   }
 

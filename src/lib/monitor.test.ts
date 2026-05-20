@@ -102,4 +102,44 @@ describe('getFiscalCalendarItems', () => {
     expect(frItem).toBeDefined()
     expect(frItem!.title).toBe('Fator R abaixo de 28% — Anexo V aplicado')
   })
+
+  // §4.2 do spec: "margem confortável" não pode aparecer se a projeção já
+  // estoura o teto, mesmo com usoTeto entre 0.5 e 0.85 (o "Meio do caminho"
+  // só vale quando ambos sinais estão saudáveis).
+  it('NÃO afirma "margem confortável" quando projeção excede o teto', () => {
+    const items = getFiscalCalendarItems({
+      refDate: new Date(2026, 6, 10),
+      nome: 'Ana',
+      tipoMei: 'geral' satisfies TipoMei,
+      anexoAtual: 'III',
+      elegivelFatorR: false,
+      usoTeto: 0.60,
+      projecaoUso: 1.45, // projeção crítica
+      faturamentoMedio: 10_000,
+      totalLancamentos: 5,
+    })
+
+    const meio = items.find(item => item.title.startsWith('Meio do caminho'))
+    expect(meio).toBeDefined()
+    expect(meio!.body.toLowerCase()).not.toContain('confortável')
+    expect(meio!.body).toMatch(/projeç|excede|estouro/i)
+  })
+
+  it('mantém "margem confortável" quando uso médio e projeção também saudável', () => {
+    const items = getFiscalCalendarItems({
+      refDate: new Date(2026, 6, 10),
+      nome: 'Ana',
+      tipoMei: 'geral' satisfies TipoMei,
+      anexoAtual: 'III',
+      elegivelFatorR: false,
+      usoTeto: 0.60,
+      projecaoUso: 0.70,
+      faturamentoMedio: 10_000,
+      totalLancamentos: 5,
+    })
+
+    const meio = items.find(item => item.title.startsWith('Meio do caminho'))
+    expect(meio).toBeDefined()
+    expect(meio!.body.toLowerCase()).toContain('confortável')
+  })
 })

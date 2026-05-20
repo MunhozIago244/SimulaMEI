@@ -228,6 +228,7 @@ export default async function DashboardPage() {
     anexoAtual: latest?.anexoAtual ?? 'III',
     elegivelFatorR: Boolean(latest?.fatorR),
     usoTeto,
+    projecaoUso: kpis.tetoAnual > 0 ? kpis.projecaoAnual / kpis.tetoAnual : undefined,
     fatorRAtual: monitorSummary?.fatorRAtual ?? latest?.fatorR?.fatorR ?? 0,
     faturamentoMedio,
     ultimoLancamentoMes: monitorRows.at(-1)?.mes ?? null,
